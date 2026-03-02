@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prop Firm Comparison Dashboard</title>
+    <style>
+        :root {
+            --bg: #f5f7fa;
+            --surface: #ffffff;
+            --surface2: #f0f4f8;
+            --border: #dde3ec;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --accent: #e53e3e;
+            --text: #1a202c;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+            --header-bg: #1e3a5f;
+            --header-text: #ffffff;
+            --tab-active: #2563eb;
+            --table-header: #1e3a5f;
+            --table-header-text: #ffffff;
+            --table-even: #f8fafc;
+            --table-odd: #ffffff;
+            --table-hover: #eff6ff;
+            --shadow: 0 1px 4px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+            --radius: 10px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 15px; }
+
+        /* ---- HEADER ---- */
+        header {
+            background: var(--header-bg);
+            color: var(--header-text);
+            padding: 28px 40px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: var(--shadow-md);
+        }
+        .header-left h1 { font-size: 1.75em; font-weight: 700; letter-spacing: 0.3px; }
+        .header-left p { font-size: 0.88em; color: rgba(255,255,255,0.72); margin-top: 4px; }
+
+        /* Language toggle */
+        .lang-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 24px;
+            padding: 6px 6px 6px 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+            user-select: none;
+        }
+        .lang-toggle:hover { background: rgba(255,255,255,0.2); }
+        .lang-toggle span { font-size: 0.85em; color: rgba(255,255,255,0.9); font-weight: 600; }
+        .lang-btn {
+            background: #ffffff;
+            color: var(--primary-dark);
+            border: none;
+            border-radius: 18px;
+            padding: 4px 14px;
+            font-size: 0.82em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .lang-btn:hover { background: #dbeafe; }
+
+        /* ---- TABS ---- */
+        .tabs {
+            display: flex;
+            background: var(--surface);
+            border-bottom: 2px solid var(--border);
+            padding: 0 40px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+        .tab-btn {
+            padding: 14px 24px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.92em;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .tab-btn:hover { color: var(--primary); background: #eff6ff; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+        /* ---- TAB CONTENT ---- */
+        .tab-content { display: none; padding: 28px 40px; max-width: 1700px; margin: 0 auto; }
+        .tab-content.active { display: block; }
+
+        /* ---- STATS BAR ---- */
+        .stats-bar { display: flex; gap: 14px; margin-bottom: 22px; flex-wrap: wrap; }
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px 20px;
+            flex: 1;
+            min-width: 130px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        .stat-card .val { font-size: 1.6em; font-weight: 700; color: var(--primary); }
+        .stat-card .lbl { font-size: 0.72em; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+        /* ---- FILTER BAR ---- */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            align-items: center;
+            background: var(--surface);
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+        .filter-bar label { font-size: 0.82em; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+        .filter-bar input[type="text"] {
+            padding: 7px 13px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 0.88em;
+            width: 260px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .filter-bar input[type="text"]:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+        .filter-bar select {
+            padding: 7px 13px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 0.88em;
+            cursor: pointer;
+        }
+        .filter-bar select:focus { outline: none; border-color: var(--primary); }
+
+        /* ---- ACCOUNT TYPE BUTTONS ---- */
+        .actype-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .actype-bar .actype-label {
+            font-size: 0.82em;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-right: 4px;
+        }
+        .actype-btn {
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: 1.5px solid var(--border);
+            background: var(--bg);
+            color: var(--text-muted);
+            font-size: 0.82em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.18s;
+            user-select: none;
+        }
+        .actype-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: #eff6ff;
+        }
+        .actype-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(37,99,235,0.18);
+        }
+
+        /* ---- TABLES ---- */
+        .table-wrapper { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 12px; box-shadow: var(--shadow); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.875em; }
+        thead th {
+            background: var(--table-header);
+            color: var(--table-header-text);
+            padding: 11px 14px;
+            text-align: left;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.76em;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        tbody tr:nth-child(even) { background: var(--table-even); }
+        tbody tr:nth-child(odd) { background: var(--table-odd); }
+        tbody tr:hover { background: var(--table-hover); }
+        tbody td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text); }
+        tbody tr:last-child td { border-bottom: none; }
+
+        /* ---- BADGES ---- */
+        .badge { display: inline-block; padding: 2px 9px; border-radius: 12px; font-size: 0.76em; font-weight: 600; }
+        .badge-yes     { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .badge-no      { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .badge-partial { background: #fef9c3; color: #854d0e; border: 1px solid #fde68a; }
+
+        .hidden { display: none !important; }
+        .no-results { text-align: center; padding: 36px; color: var(--text-muted); font-size: 0.95em; }
+
+        /* ---- CONSISTENCY RULES SECTION ---- */
+        .consistency-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(680px, 1fr)); gap: 22px; margin-top: 8px; }
+
+        .firm-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: box-shadow 0.2s;
+        }
+        .firm-card:hover { box-shadow: var(--shadow-md); }
+
+        .firm-card-header {
+            background: var(--table-header);
+            color: #fff;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .firm-card-header h3 { font-size: 1.08em; font-weight: 700; }
+        .firm-badge {
+            margin-left: auto;
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.72em;
+            font-weight: 700;
+            background: rgba(255,255,255,0.18);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .firm-badge.warn { background: rgba(251,191,36,0.25); color: #fbbf24; border-color: rgba(251,191,36,0.4); }
+
+        .firm-card-body { padding: 18px 20px; }
+
+        .rule-row {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 6px 14px;
+            margin-bottom: 10px;
+            align-items: start;
+        }
+        .rule-label { font-size: 0.76em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); padding-top: 2px; }
+        .rule-value { font-size: 0.88em; color: var(--text); }
+
+        .rule-detail-box {
+            background: #eff6ff;
+            border-left: 3px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+            padding: 12px 15px;
+            margin: 12px 0;
+            font-size: 0.86em;
+            color: #1e3a5f;
+            line-height: 1.75;
+        }
+
+        .source-links { margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .source-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 13px;
+            border-radius: 20px;
+            font-size: 0.78em;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.18s;
+        }
+        .source-link.official { background: #dbeafe; color: var(--primary-dark); border: 1px solid #93c5fd; }
+        .source-link.official:hover { background: #bfdbfe; }
+        .source-link.secondary { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
+        .source-link.secondary:hover { background: var(--border); color: var(--text); }
+
+        .consistency-summary { margin-bottom: 26px; }
+        .consistency-summary h2 { font-size: 1.05em; color: var(--primary-dark); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid var(--border); font-weight: 700; }
+
+        hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.82em;
+            border-top: 1px solid var(--border);
+            margin-top: 36px;
+            background: var(--surface);
+        }
+        footer a { color: var(--primary); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* ---- COMPARATOR TAB ---- */
+        .comparator-intro {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 22px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        .comparator-intro h2 {
+            font-size: 1.05em;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+        .comparator-intro p {
+            font-size: 0.86em;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .size-selector-bar {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .size-selector-bar .size-label {
+            font-size: 0.82em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--text-muted);
+            margin-right: 4px;
+        }
+        .size-btn {
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1.5px solid var(--border);
+            background: var(--bg);
+            color: var(--text-muted);
+            font-size: 0.83em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.18s;
+            user-select: none;
+        }
+        .size-btn:hover { border-color: var(--primary); color: var(--primary); background: #eff6ff; }
+        .size-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 2px 8px rgba(37,99,235,0.18); }
+        .cmp-filter-bar {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px 18px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: flex-end;
+        }
+        .cmp-filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 140px;
+        }
+        .cmp-filter-group label {
+            font-size: 0.75em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--text-muted);
+        }
+        .cmp-filter-group select, .cmp-filter-group input[type=number] {
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.86em;
+            cursor: pointer;
+        }
+        .cmp-filter-group select:focus, .cmp-filter-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.10);
+        }
+        .cmp-reset-btn {
+            padding: 7px 18px;
+            border-radius: 6px;
+            border: 1.5px solid var(--border);
+            background: var(--bg);
+            color: var(--text-muted);
+            font-size: 0.83em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.18s;
+            align-self: flex-end;
+        }
+        .cmp-reset-btn:hover { border-color: var(--accent); color: var(--accent); background: #fff5f5; }
+        .cmp-table-wrapper { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); margin-bottom: 12px; }
+        #cmp-table { width: 100%; border-collapse: collapse; font-size: 0.875em; }
+        #cmp-table thead th {
+            background: var(--table-header);
+            color: var(--table-header-text);
+            padding: 11px 14px;
+            text-align: left;
+            font-size: 0.82em;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+        #cmp-table thead th:hover { background: #162d4a; }
+        #cmp-table thead th .sort-icon {
+            display: inline-block;
+            margin-left: 5px;
+            opacity: 0.5;
+            font-size: 0.85em;
+            transition: opacity 0.15s;
+        }
+        #cmp-table thead th.sorted-asc .sort-icon::after { content: ' ▲'; opacity: 1; }
+        #cmp-table thead th.sorted-desc .sort-icon::after { content: ' ▼'; opacity: 1; }
+        #cmp-table thead th:not(.sorted-asc):not(.sorted-desc) .sort-icon::after { content: ' ⇅'; }
+        #cmp-table tbody tr:nth-child(even) { background: var(--table-even); }
+        #cmp-table tbody tr:nth-child(odd) { background: var(--table-odd); }
+        #cmp-table tbody tr:hover { background: var(--table-hover); }
+        #cmp-table tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        #cmp-table tbody td:first-child { font-weight: 700; white-space: nowrap; }
+        .cmp-best { background: #dcfce7 !important; }
+        .cmp-best td:first-child::after { content: ' ★'; color: #16a34a; font-size: 0.9em; }
+        .cmp-no-data { text-align: center; padding: 32px; color: var(--text-muted); font-size: 0.9em; }
+        .cmp-legend {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 0.78em;
+            color: var(--text-muted);
+            margin-top: 8px;
+            padding: 8px 4px;
+        }
+        .cmp-legend span { display: flex; align-items: center; gap: 5px; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+        @media (max-width: 900px) {
+            .consistency-grid { grid-template-columns: 1fr; }
+            .tabs { padding: 0 8px; }
+            .tab-btn { padding: 12px 10px; font-size: 0.82em; }
+            .tab-content { padding: 16px 12px; }
+            .rule-row { grid-template-columns: 1fr; gap: 2px; }
+            header { padding: 20px 16px; }
+            .filter-bar input[type="text"] { width: 100%; }
+        }
+
+        /* ---- i18n hidden ---- */
+        [data-lang] { display: none; }
+        .lang-en [data-lang="en"] { display: inline; }
+        .lang-zh [data-lang="zh"] { display: inline; }
+        .lang-en [data-lang-block="en"] { display: block; }
+        .lang-zh [data-lang-block="zh"] { display: block; }
+        [data-lang-block] { display: none; }
+        /* For table cells that need block-level lang switching */
+        td [data-lang], th [data-lang] { display: none; }
+        .lang-en td [data-lang="en"], .lang-en th [data-lang="en"] { display: inline; }
+        .lang-zh td [data-lang="zh"], .lang-zh th [data-lang="zh"] { display: inline; }
+    </style>
+</head>
+<body class="lang-en">
+
+<header>
+    <div class="header-left">
+        <h1>
+            <span data-lang="en">Prop Firm Comparison Dashboard</span>
+            <span data-lang="zh">自营交易公司对比仪表板</span>
+        </h1>
+        <p>FTMO &nbsp;|&nbsp; FundedNext &nbsp;|&nbsp; The5ers &nbsp;|&nbsp; E8 Markets &nbsp;|&nbsp; FXIFY &nbsp;|&nbsp; WeMasterTrade</p>
+    </div>
+    <div class="lang-toggle" onclick="toggleLang()">
+        <span data-lang="en">Language</span>
+        <span data-lang="zh">语言</span>
+        <button class="lang-btn" id="lang-btn-label">切换中文</button>
+    </div>
+</header>
+
+<div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('pricing', this)">
+        💰 <span data-lang="en">Pricing &amp; Accounts</span><span data-lang="zh">定价与账户</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('rules', this)">
+        📋 <span data-lang="en">Trading Rules</span><span data-lang="zh">交易规则</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('consistency', this)">
+        ⚖️ <span data-lang="en">Consistency Rules</span><span data-lang="zh">一致性规则</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('compare', this)">
+        🔍 <span data-lang="en">Account Comparator</span><span data-lang="zh">账户横向对比</span>
+    </button>
+</div>
+
+<!-- ==================== PRICING TAB ==================== -->
+<div id="pricing" class="tab-content active">
+    <div class="stats-bar">
+        <div class="stat-card"><div class="val">6</div><div class="lbl"><span data-lang="en">Prop Firms</span><span data-lang="zh">自营公司</span></div></div>
+        <div class="stat-card"><div class="val" id="pricing-count">74</div><div class="lbl"><span data-lang="en">Account Options</span><span data-lang="zh">账户选项</span></div></div>
+        <div class="stat-card"><div class="val">100%</div><div class="lbl"><span data-lang="en">Max Profit Split</span><span data-lang="zh">最高分润比例</span></div></div>
+        <div class="stat-card"><div class="val">$32.99+</div><div class="lbl"><span data-lang="en">Starting Price</span><span data-lang="zh">最低起始价格</span></div></div>
+    </div>
+    <div class="filter-bar">
+        <label><span data-lang="en">Search:</span><span data-lang="zh">搜索：</span></label>
+        <input type="text" id="p-search" placeholder="" data-ph-en="Filter by firm, account type, size…" data-ph-zh="按公司、账户类型、规模筛选…" oninput="filterPricing()">
+        <label><span data-lang="en">Firm:</span><span data-lang="zh">公司：</span></label>
+        <select id="p-firm" onchange="filterPricing()">
+            <option value="" data-en="All Firms" data-zh="全部公司">All Firms</option>
+            <option value="FTMO">FTMO</option>
+            <option value="FundedNext">FundedNext</option>
+            <option value="The5ers">The5ers</option>
+            <option value="E8 Markets">E8 Markets</option>
+            <option value="FXIFY">FXIFY</option>
+            <option value="WeMasterTrade">WeMasterTrade</option>
+        </select>
+    </div>
+    <div class="actype-bar">
+        <span class="actype-label"><span data-lang="en">Account Type:</span><span data-lang="zh">账户类型：</span></span>
+        <button class="actype-btn active" data-actype="" onclick="setActype(this)">
+            <span data-lang="en">All Types</span><span data-lang="zh">全部类型</span>
+        </button>
+        <button class="actype-btn" data-actype="1-step" onclick="setActype(this)">
+            <span data-lang="en">1-Step</span><span data-lang="zh">1 阶段</span>
+        </button>
+        <button class="actype-btn" data-actype="2-step" onclick="setActype(this)">
+            <span data-lang="en">2-Step</span><span data-lang="zh">2 阶段</span>
+        </button>
+        <button class="actype-btn" data-actype="3-step" onclick="setActype(this)">
+            <span data-lang="en">3-Step</span><span data-lang="zh">3 阶段</span>
+        </button>
+        <button class="actype-btn" data-actype="instant" onclick="setActype(this)">
+            <span data-lang="en">Instant / No Eval</span><span data-lang="zh">即时 / 无评估</span>
+        </button>
+    </div>
+    <div class="table-wrapper">
+        <table id="p-table">
+            <thead><tr>
+                <th><span data-lang="en">Firm</span><span data-lang="zh">公司</span></th>
+                <th><span data-lang="en">Account Type</span><span data-lang="zh">账户类型</span></th>
+                <th><span data-lang="en">Account Size</span><span data-lang="zh">账户规模</span></th>
+                <th><span data-lang="en">Price</span><span data-lang="zh">报名费</span></th>
+                <th><span data-lang="en">Profit Split (Funded)</span><span data-lang="zh">分润比例（资金阶段）</span></th>
+                <th><span data-lang="en">Fee Refund</span><span data-lang="zh">返还报名费</span></th>
+                <th><span data-lang="en">Notes</span><span data-lang="zh">备注</span></th>
+            </tr></thead>
+            <tbody>
+                <!-- FTMO -->
+                <tr data-firm="FTMO" data-actype="2-step"><td><strong>FTMO</strong></td><td>2-Step Challenge</td><td>$10,000</td><td>€155</td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">Refunded with 1st payout</span><span data-lang="zh">首次出金时返还</span></td></tr>
+                <tr data-firm="FTMO" data-actype="2-step"><td><strong>FTMO</strong></td><td>2-Step Challenge</td><td>$25,000</td><td>€250</td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">Refunded with 1st payout</span><span data-lang="zh">首次出金时返还</span></td></tr>
+                <tr data-firm="FTMO" data-actype="2-step"><td><strong>FTMO</strong></td><td>2-Step Challenge</td><td>$50,000</td><td>€345</td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">Refunded with 1st payout</span><span data-lang="zh">首次出金时返还</span></td></tr>
+                <tr data-firm="FTMO" data-actype="2-step"><td><strong>FTMO</strong></td><td>2-Step Challenge</td><td>$100,000</td><td>€540</td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">Refunded with 1st payout</span><span data-lang="zh">首次出金时返还</span></td></tr>
+                <tr data-firm="FTMO" data-actype="2-step"><td><strong>FTMO</strong></td><td>2-Step Challenge</td><td>$200,000</td><td>€1,080</td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">Refunded with 1st payout</span><span data-lang="zh">首次出金时返还</span></td></tr>
+                <tr data-firm="FTMO" data-actype="1-step"><td><strong>FTMO</strong></td><td>1-Step Challenge</td><td>$10,000</td><td>€155</td><td>90%</td><td><span class="badge badge-no"><span data-lang="en">No</span><span data-lang="zh">否</span></span></td><td><span data-lang="en">Non-refundable</span><span data-lang="zh">不返还</span></td></tr>
+                <tr data-firm="FTMO" data-actype="1-step"><td><strong>FTMO</strong></td><td>1-Step Challenge</td><td>$25,000</td><td>€250</td><td>90%</td><td><span class="badge badge-no"><span data-lang="en">No</span><span data-lang="zh">否</span></span></td><td><span data-lang="en">Non-refundable</span><span data-lang="zh">不返还</span></td></tr>
+                <tr data-firm="FTMO" data-actype="1-step"><td><strong>FTMO</strong></td><td>1-Step Challenge</td><td>$50,000</td><td>€345</td><td>90%</td><td><span class="badge badge-no"><span data-lang="en">No</span><span data-lang="zh">否</span></span></td><td><span data-lang="en">Non-refundable</span><span data-lang="zh">不返还</span></td></tr>
+                <tr data-firm="FTMO" data-actype="1-step"><td><strong>FTMO</strong></td><td>1-Step Challenge</td><td>$100,000</td><td>€540</td><td>90%</td><td><span class="badge badge-no"><span data-lang="en">No</span><span data-lang="zh">否</span></span></td><td><span data-lang="en">Non-refundable</span><span data-lang="zh">不返还</span></td></tr>
+                <tr data-firm="FTMO" data-actype="1-step"><td><strong>FTMO</strong></td><td>1-Step Challenge</td><td>$200,000</td><td>€1,080</td><td>90%</td><td><span class="badge badge-no"><span data-lang="en">No</span><span data-lang="zh">否</span></span></td><td><span data-lang="en">Non-refundable</span><span data-lang="zh">不返还</span></td></tr>
+                <!-- FundedNext -->
+                <tr data-firm="FundedNext" data-actype="2-step"><td><strong>FundedNext</strong></td><td>Stellar 2-Step</td><td>$6,000</td><td>$59.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">+15% challenge reward</span><span data-lang="zh">+15% 挑战奖励</span></td></tr>
+                <tr data-firm="FundedNext" data-actype="2-step"><td><strong>FundedNext</strong></td><td>Stellar 2-Step</td><td>$15,000</td><td>$119.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">+15% challenge reward</span><span data-lang="zh">+15% 挑战奖励</span></td></tr>
+                <tr data-firm="FundedNext" data-actype="2-step"><td><strong>FundedNext</strong></td><td>Stellar 2-Step</td><td>$25,000</td><td>$199.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">+15% challenge reward</span><span data-lang="zh">+15% 挑战奖励</span></td></tr>
+                <tr data-firm="FundedNext" data-actype="2-step"><td><strong>FundedNext</strong></td><td>Stellar 2-Step</td><td>$50,000</td><td>$299.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="FundedNext" data-actype="2-step"><td><strong>FundedNext</strong></td><td>Stellar 2-Step</td><td>$100,000</td><td>$549.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="FundedNext" data-actype="2-step"><td><strong>FundedNext</strong></td><td>Stellar 2-Step</td><td>$200,000</td><td>$1,099.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="FundedNext" data-actype="1-step"><td><strong>FundedNext</strong></td><td>Stellar 1-Step</td><td>$6,000</td><td>$65.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">+15% challenge reward</span><span data-lang="zh">+15% 挑战奖励</span></td></tr>
+                <tr data-firm="FundedNext" data-actype="1-step"><td><strong>FundedNext</strong></td><td>Stellar 1-Step</td><td>$15,000</td><td>$129.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="FundedNext" data-actype="1-step"><td><strong>FundedNext</strong></td><td>Stellar 1-Step</td><td>$25,000</td><td>$219.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="FundedNext" data-actype="1-step"><td><strong>FundedNext</strong></td><td>Stellar 1-Step</td><td>$50,000</td><td>$329.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="FundedNext" data-actype="1-step"><td><strong>FundedNext</strong></td><td>Stellar 1-Step</td><td>$100,000</td><td>$569.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="FundedNext" data-actype="1-step"><td><strong>FundedNext</strong></td><td>Stellar 1-Step</td><td>$200,000</td><td>$1,099.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="FundedNext" data-actype="1-step"><td><strong>FundedNext</strong></td><td>Stellar Lite</td><td>$5,000</td><td>$32.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="FundedNext" data-actype="1-step"><td><strong>FundedNext</strong></td><td>Stellar Lite</td><td>$10,000</td><td>$59.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="FundedNext" data-actype="1-step"><td><strong>FundedNext</strong></td><td>Stellar Lite</td><td>$25,000</td><td>$139.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="FundedNext" data-actype="1-step"><td><strong>FundedNext</strong></td><td>Stellar Lite</td><td>$50,000</td><td>$229.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="FundedNext" data-actype="1-step"><td><strong>FundedNext</strong></td><td>Stellar Lite</td><td>$100,000</td><td>$399.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="FundedNext" data-actype="1-step"><td><strong>FundedNext</strong></td><td>Stellar Lite</td><td>$200,000</td><td>$798.99</td><td>80%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="FundedNext" data-actype="instant"><td><strong>FundedNext</strong></td><td>Stellar Instant</td><td>$2,000</td><td>$59.99</td><td>15%</td><td><span class="badge badge-no"><span data-lang="en">N/A</span><span data-lang="zh">不适用</span></span></td><td><span data-lang="en">Trailing drawdown; no evaluation</span><span data-lang="zh">追踪回撤；无评估阶段</span></td></tr>
+                <tr data-firm="FundedNext" data-actype="instant"><td><strong>FundedNext</strong></td><td>Stellar Instant</td><td>$5,000</td><td>$149.99</td><td>15%</td><td><span class="badge badge-no"><span data-lang="en">N/A</span><span data-lang="zh">不适用</span></span></td><td><span data-lang="en">Trailing drawdown; no evaluation</span><span data-lang="zh">追踪回撤；无评估阶段</span></td></tr>
+                <tr data-firm="FundedNext" data-actype="instant"><td><strong>FundedNext</strong></td><td>Stellar Instant</td><td>$10,000</td><td>$299.99</td><td>15%</td><td><span class="badge badge-no"><span data-lang="en">N/A</span><span data-lang="zh">不适用</span></span></td><td><span data-lang="en">Trailing drawdown; no evaluation</span><span data-lang="zh">追踪回撤；无评估阶段</span></td></tr>
+                <tr data-firm="FundedNext" data-actype="instant"><td><strong>FundedNext</strong></td><td>Stellar Instant</td><td>$20,000</td><td>$599.99</td><td>15%</td><td><span class="badge badge-no"><span data-lang="en">N/A</span><span data-lang="zh">不适用</span></span></td><td><span data-lang="en">Trailing drawdown; no evaluation</span><span data-lang="zh">追踪回撤；无评估阶段</span></td></tr>
+                <!-- The5ers -->
+                <tr data-firm="The5ers" data-actype="1-step"><td><strong>The5ers</strong></td><td>Hyper Growth (1-Step)</td><td>$5,000</td><td>$260</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-no"><span data-lang="en">No</span><span data-lang="zh">否</span></span></td><td>—</td></tr>
+                <tr data-firm="The5ers" data-actype="1-step"><td><strong>The5ers</strong></td><td>Hyper Growth (1-Step)</td><td>$10,000</td><td>$400</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-no"><span data-lang="en">No</span><span data-lang="zh">否</span></span></td><td>—</td></tr>
+                <tr data-firm="The5ers" data-actype="1-step"><td><strong>The5ers</strong></td><td>Hyper Growth (1-Step)</td><td>$20,000</td><td>$600</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-no"><span data-lang="en">No</span><span data-lang="zh">否</span></span></td><td>—</td></tr>
+                <tr data-firm="The5ers" data-actype="2-step"><td><strong>The5ers</strong></td><td>High Stakes (2-Step)</td><td>$25,000</td><td>$165</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="The5ers" data-actype="2-step"><td><strong>The5ers</strong></td><td>High Stakes (2-Step)</td><td>$50,000</td><td>$275</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="The5ers" data-actype="2-step"><td><strong>The5ers</strong></td><td>High Stakes (2-Step)</td><td>$100,000</td><td>$495</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="The5ers" data-actype="2-step"><td><strong>The5ers</strong></td><td>High Stakes (2-Step)</td><td>$200,000</td><td>$850</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="The5ers" data-actype="3-step"><td><strong>The5ers</strong></td><td>Bootcamp (3-Step)</td><td>$10,000</td><td>$110</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="The5ers" data-actype="3-step"><td><strong>The5ers</strong></td><td>Bootcamp (3-Step)</td><td>$20,000</td><td>$185</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="The5ers" data-actype="3-step"><td><strong>The5ers</strong></td><td>Bootcamp (3-Step)</td><td>$40,000</td><td>$325</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="The5ers" data-actype="3-step"><td><strong>The5ers</strong></td><td>Bootcamp (3-Step)</td><td>$60,000</td><td>$450</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <tr data-firm="The5ers" data-actype="3-step"><td><strong>The5ers</strong></td><td>Bootcamp (3-Step)</td><td>$100,000</td><td>$650</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td>—</td></tr>
+                <!-- E8 Markets -->
+                <tr data-firm="E8 Markets" data-actype="1-step"><td><strong>E8 Markets</strong></td><td>E8 One Forex (1-Step)</td><td>$5,000</td><td>$40.00</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-no"><span data-lang="en">No</span><span data-lang="zh">否</span></span></td><td><span data-lang="en">Profit Target 6%, Daily DD 3%</span><span data-lang="zh">利润目标 6%，每日回撤 3%</span></td></tr>
+                <tr data-firm="E8 Markets" data-actype="1-step"><td><strong>E8 Markets</strong></td><td>E8 One Forex (1-Step)</td><td>$10,000</td><td>$79.20</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-no"><span data-lang="en">No</span><span data-lang="zh">否</span></span></td><td>—</td></tr>
+                <tr data-firm="E8 Markets" data-actype="1-step"><td><strong>E8 Markets</strong></td><td>E8 One Forex (1-Step)</td><td>$100,000</td><td>$488.00</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-no"><span data-lang="en">No</span><span data-lang="zh">否</span></span></td><td><span data-lang="en">Profit Target 9%, Daily DD 4%</span><span data-lang="zh">利润目标 9%，每日回撤 4%</span></td></tr>
+                <tr data-firm="E8 Markets" data-actype="1-step"><td><strong>E8 Markets</strong></td><td>E8 One Forex (1-Step)</td><td>$500,000</td><td>$1,998.00</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-no"><span data-lang="en">No</span><span data-lang="zh">否</span></span></td><td><span data-lang="en">Profit Target 9%, Daily DD 4%</span><span data-lang="zh">利润目标 9%，每日回撤 4%</span></td></tr>
+                <tr data-firm="E8 Markets" data-actype="1-step"><td><strong>E8 Markets</strong></td><td>E8 One Expert (1-Step)</td><td>$500,000</td><td>$4,460.00</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-no"><span data-lang="en">No</span><span data-lang="zh">否</span></span></td><td><span data-lang="en">Profit Target 21%, Daily DD 9.2%</span><span data-lang="zh">利润目标 21%，每日回撤 9.2%</span></td></tr>
+                <tr data-firm="E8 Markets" data-actype="1-step"><td><strong>E8 Markets</strong></td><td>E8 Static - Crypto (1-Step)</td><td>$100,000</td><td>$739.80</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-no"><span data-lang="en">No</span><span data-lang="zh">否</span></span></td><td><span data-lang="en">Crypto account</span><span data-lang="zh">加密货币账户</span></td></tr>
+                <tr data-firm="E8 Markets" data-actype="1-step"><td><strong>E8 Markets</strong></td><td>E8 Signature - Crypto (1-Step)</td><td>$100,000</td><td>$234.00</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-no"><span data-lang="en">No</span><span data-lang="zh">否</span></span></td><td><span data-lang="en">Crypto account</span><span data-lang="zh">加密货币账户</span></td></tr>
+                <!-- FXIFY -->
+                <tr data-firm="FXIFY" data-actype="1-step"><td><strong>FXIFY</strong></td><td>One Phase</td><td>$5,000</td><td>$250</td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">100% refundable</span><span data-lang="zh">100% 返还</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="1-step"><td><strong>FXIFY</strong></td><td>One Phase</td><td>$10,000</td><td>$349</td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">100% refundable</span><span data-lang="zh">100% 返还</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="1-step"><td><strong>FXIFY</strong></td><td>One Phase</td><td>$25,000</td><td>$199</td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">100% refundable</span><span data-lang="zh">100% 返还</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="1-step"><td><strong>FXIFY</strong></td><td>One Phase</td><td>$50,000</td><td>$299</td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">100% refundable</span><span data-lang="zh">100% 返还</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="1-step"><td><strong>FXIFY</strong></td><td>One Phase</td><td>$100,000</td><td>$499</td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">100% refundable</span><span data-lang="zh">100% 返还</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="1-step"><td><strong>FXIFY</strong></td><td>One Phase</td><td>$200,000</td><td>$799</td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">100% refundable</span><span data-lang="zh">100% 返还</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="1-step"><td><strong>FXIFY</strong></td><td>One Phase</td><td>$400,000</td><td>$1,399</td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">100% refundable</span><span data-lang="zh">100% 返还</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="2-step"><td><strong>FXIFY</strong></td><td>Two Phase (Classic Static)</td><td>$5,000</td><td>$59</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-partial"><span data-lang="en">Not specified</span><span data-lang="zh">未明确</span></span></td><td><span data-lang="en">25% consistency rule (funded)</span><span data-lang="zh">25% 一致性规则（资金阶段）</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="2-step"><td><strong>FXIFY</strong></td><td>Two Phase (Classic Static)</td><td>$10,000</td><td>$99</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-partial"><span data-lang="en">Not specified</span><span data-lang="zh">未明确</span></span></td><td><span data-lang="en">25% consistency rule (funded)</span><span data-lang="zh">25% 一致性规则（资金阶段）</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="2-step"><td><strong>FXIFY</strong></td><td>Two Phase (Classic Static)</td><td>$25,000</td><td>$149</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-partial"><span data-lang="en">Not specified</span><span data-lang="zh">未明确</span></span></td><td><span data-lang="en">25% consistency rule (funded)</span><span data-lang="zh">25% 一致性规则（资金阶段）</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="2-step"><td><strong>FXIFY</strong></td><td>Two Phase (Classic Static)</td><td>$50,000</td><td>$249</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-partial"><span data-lang="en">Not specified</span><span data-lang="zh">未明确</span></span></td><td><span data-lang="en">25% consistency rule (funded)</span><span data-lang="zh">25% 一致性规则（资金阶段）</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="2-step"><td><strong>FXIFY</strong></td><td>Two Phase (Classic Static)</td><td>$100,000</td><td>$399</td><td><span data-lang="en">Up to 100%</span><span data-lang="zh">最高 100%</span></td><td><span class="badge badge-partial"><span data-lang="en">Not specified</span><span data-lang="zh">未明确</span></span></td><td><span data-lang="en">25% consistency rule (funded)</span><span data-lang="zh">25% 一致性规则（资金阶段）</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="3-step"><td><strong>FXIFY</strong></td><td>Three Phase</td><td>$5,000</td><td>$39</td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">100% refundable</span><span data-lang="zh">100% 返还</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="3-step"><td><strong>FXIFY</strong></td><td>Three Phase</td><td>$25,000</td><td>$149</td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">100% refundable</span><span data-lang="zh">100% 返还</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="3-step"><td><strong>FXIFY</strong></td><td>Three Phase</td><td>$100,000</td><td>$299</td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">100% refundable</span><span data-lang="zh">100% 返还</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="3-step"><td><strong>FXIFY</strong></td><td>Three Phase</td><td>$400,000</td><td>$999</td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">100% refundable</span><span data-lang="zh">100% 返还</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="instant"><td><strong>FXIFY</strong></td><td>Instant Funding</td><td>Up to $50,000</td><td><span data-lang="en">Varies</span><span data-lang="zh">按规模定价</span></td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-no"><span data-lang="en">N/A</span><span data-lang="zh">不适用</span></span></td><td><span data-lang="en">No evaluation; 20% consistency rule</span><span data-lang="zh">无评估；20% 一致性规则</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="2-step"><td><strong>FXIFY</strong></td><td>Lightning Challenge</td><td>$5,000+</td><td><span data-lang="en">Varies</span><span data-lang="zh">按规模定价</span></td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-partial"><span data-lang="en">Not specified</span><span data-lang="zh">未明确</span></span></td><td><span data-lang="en">30% consistency rule; 7-day limit</span><span data-lang="zh">30% 一致性规则；7 天时限</span></td></tr>
+                <!-- WeMasterTrade -->
+                <tr data-firm="WeMasterTrade" data-actype="2-step"><td><strong>WeMasterTrade</strong></td><td>Challenge Package (2-Phase)</td><td>$10,000</td><td>$175</td><td>90%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">+30% challenge reward; RC Rule from Phase 2</span><span data-lang="zh">+30% 挑战奖励；第 2 阶段起适用 RC 规则</span></td></tr>
+                <tr data-firm="WeMasterTrade" data-actype="2-step"><td><strong>WeMasterTrade</strong></td><td>Challenge Package (2-Phase)</td><td>$25,000</td><td><span data-lang="en">Contact firm</span><span data-lang="zh">联系公司</span></td><td>90%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">+30% challenge reward</span><span data-lang="zh">+30% 挑战奖励</span></td></tr>
+                <tr data-firm="WeMasterTrade" data-actype="2-step"><td><strong>WeMasterTrade</strong></td><td>Challenge Package (2-Phase)</td><td>$50,000</td><td><span data-lang="en">Contact firm</span><span data-lang="zh">联系公司</span></td><td>90%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">+30% challenge reward</span><span data-lang="zh">+30% 挑战奖励</span></td></tr>
+                <tr data-firm="WeMasterTrade" data-actype="2-step"><td><strong>WeMasterTrade</strong></td><td>Challenge Package (2-Phase)</td><td>$100,000</td><td><span data-lang="en">Contact firm</span><span data-lang="zh">联系公司</span></td><td>90%</td><td><span class="badge badge-yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></span></td><td><span data-lang="en">+30% challenge reward</span><span data-lang="zh">+30% 挑战奖励</span></td></tr>
+                <tr data-firm="WeMasterTrade" data-actype="instant"><td><strong>WeMasterTrade</strong></td><td>Instant Package</td><td>$10,000–$200,000</td><td><span data-lang="en">Varies</span><span data-lang="zh">按规模定价</span></td><td><span data-lang="en">Up to 90%</span><span data-lang="zh">最高 90%</span></td><td><span class="badge badge-no"><span data-lang="en">N/A</span><span data-lang="zh">不适用</span></span></td><td><span data-lang="en">No evaluation; RC Rule (1% for NoPC)</span><span data-lang="zh">无评估；RC 规则（NoPC 为 1%）</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="p-noresult" class="no-results hidden">
+        <span data-lang="en">No matching results found.</span><span data-lang="zh">未找到匹配结果。</span>
+    </div>
+</div>
+
+<!-- ==================== RULES TAB ==================== -->
+<div id="rules" class="tab-content">
+    <div class="stats-bar">
+        <div class="stat-card"><div class="val">6</div><div class="lbl"><span data-lang="en">Prop Firms</span><span data-lang="zh">自营公司</span></div></div>
+        <div class="stat-card"><div class="val">3–9.2%</div><div class="lbl"><span data-lang="en">Daily DD Range</span><span data-lang="zh">每日回撤范围</span></div></div>
+        <div class="stat-card"><div class="val">5–10%</div><div class="lbl"><span data-lang="en">Total DD Range</span><span data-lang="zh">总回撤范围</span></div></div>
+        <div class="stat-card"><div class="val">1:30–1:100</div><div class="lbl"><span data-lang="en">Leverage Range</span><span data-lang="zh">杠杆范围</span></div></div>
+    </div>
+    <div class="filter-bar">
+        <label><span data-lang="en">Search:</span><span data-lang="zh">搜索：</span></label>
+        <input type="text" id="r-search" placeholder="" data-ph-en="Filter by firm, rule, drawdown…" data-ph-zh="按公司、规则、回撤筛选…" oninput="filterTable('r-table','r-search','r-firm')">
+        <label><span data-lang="en">Firm:</span><span data-lang="zh">公司：</span></label>
+        <select id="r-firm" onchange="filterTable('r-table','r-search','r-firm')">
+            <option value="" data-en="All Firms" data-zh="全部公司">All Firms</option>
+            <option value="FTMO">FTMO</option>
+            <option value="FundedNext">FundedNext</option>
+            <option value="The5ers">The5ers</option>
+            <option value="E8 Markets">E8 Markets</option>
+            <option value="FXIFY">FXIFY</option>
+            <option value="WeMasterTrade">WeMasterTrade</option>
+        </select>
+    </div>
+    <div class="table-wrapper">
+        <table id="r-table">
+            <thead><tr>
+                <th><span data-lang="en">Firm</span><span data-lang="zh">公司</span></th>
+                <th><span data-lang="en">Account Type</span><span data-lang="zh">账户类型</span></th>
+                <th><span data-lang="en">Max Daily DD</span><span data-lang="zh">最大每日回撤</span></th>
+                <th><span data-lang="en">Max Total DD</span><span data-lang="zh">最大总回撤</span></th>
+                <th><span data-lang="en">Profit Target</span><span data-lang="zh">利润目标</span></th>
+                <th><span data-lang="en">Min Trading Days</span><span data-lang="zh">最少交易天数</span></th>
+                <th><span data-lang="en">Consistency Rule</span><span data-lang="zh">一致性规则</span></th>
+                <th><span data-lang="en">News Trading</span><span data-lang="zh">新闻交易</span></th>
+                <th><span data-lang="en">Weekend Holding</span><span data-lang="zh">持仓过周末</span></th>
+                <th><span data-lang="en">EA Allowed</span><span data-lang="zh">允许 EA</span></th>
+                <th><span data-lang="en">Leverage</span><span data-lang="zh">杠杆</span></th>
+            </tr></thead>
+            <tbody>
+                <tr data-firm="FTMO"><td><strong>FTMO</strong></td><td>2-Step Challenge</td><td>5%</td><td>10%</td><td><span data-lang="en">10% (P1), 5% (P2)</span><span data-lang="zh">10%（第1阶段），5%（第2阶段）</span></td><td><span data-lang="en">4 days</span><span data-lang="zh">4 天</span></td><td><span class="badge badge-no"><span data-lang="en">None</span><span data-lang="zh">无</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td>1:100</td></tr>
+                <tr data-firm="FTMO"><td><strong>FTMO</strong></td><td>1-Step Challenge</td><td>3%</td><td>10%</td><td>10%</td><td>—</td><td><span data-lang="en">Best Day Rule: ≤50%</span><span data-lang="zh">最佳日规则：≤50%</span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td>1:100</td></tr>
+                <tr data-firm="FundedNext"><td><strong>FundedNext</strong></td><td>Stellar 2-Step</td><td>5%</td><td>10%</td><td><span data-lang="en">8% (P1), 5% (P2)</span><span data-lang="zh">8%（第1阶段），5%（第2阶段）</span></td><td><span data-lang="en">5 days / 5 trades</span><span data-lang="zh">5 天 / 5 笔</span></td><td><span class="badge badge-no"><span data-lang="en">None</span><span data-lang="zh">无</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td>1:100</td></tr>
+                <tr data-firm="FundedNext"><td><strong>FundedNext</strong></td><td>Stellar 1-Step</td><td>3%</td><td>6%</td><td>—</td><td><span data-lang="en">2 days / 2 trades</span><span data-lang="zh">2 天 / 2 笔</span></td><td><span class="badge badge-no"><span data-lang="en">None</span><span data-lang="zh">无</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-no"><span data-lang="en">No EAs</span><span data-lang="zh">禁止 EA</span></span></td><td>1:100</td></tr>
+                <tr data-firm="FundedNext"><td><strong>FundedNext</strong></td><td>Stellar Lite</td><td>4%</td><td>8%</td><td><span data-lang="en">8% (P1), 4% (P2)</span><span data-lang="zh">8%（第1阶段），4%（第2阶段）</span></td><td><span data-lang="en">5 days / 5 trades</span><span data-lang="zh">5 天 / 5 笔</span></td><td><span class="badge badge-no"><span data-lang="en">None</span><span data-lang="zh">无</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td>1:100</td></tr>
+                <tr data-firm="FundedNext"><td><strong>FundedNext</strong></td><td>Stellar Instant</td><td>N/A</td><td><span data-lang="en">6% (Trailing)</span><span data-lang="zh">6%（追踪）</span></td><td>N/A</td><td><span data-lang="en">None</span><span data-lang="zh">无</span></td><td><span class="badge badge-no"><span data-lang="en">None</span><span data-lang="zh">无</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td>1:100</td></tr>
+                <tr data-firm="The5ers"><td><strong>The5ers</strong></td><td>Hyper Growth (1-Step)</td><td><span data-lang="en">3% (Daily Pause)</span><span data-lang="zh">3%（每日暂停）</span></td><td><span data-lang="en">6% (Stop Out)</span><span data-lang="zh">6%（强平）</span></td><td>10%</td><td><span data-lang="en">5 days</span><span data-lang="zh">5 天</span></td><td><span data-lang="en">Inactivity: max 30 days</span><span data-lang="zh">不活跃：最多 30 天</span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td>1:30</td></tr>
+                <tr data-firm="The5ers"><td><strong>The5ers</strong></td><td>High Stakes (2-Step)</td><td><span data-lang="en">3% (Daily Pause)</span><span data-lang="zh">3%（每日暂停）</span></td><td><span data-lang="en">6% (Stop Out)</span><span data-lang="zh">6%（强平）</span></td><td><span data-lang="en">10% per phase</span><span data-lang="zh">每阶段 10%</span></td><td><span data-lang="en">5 days</span><span data-lang="zh">5 天</span></td><td><span data-lang="en">Min 3 profitable days (≥0.5%)</span><span data-lang="zh">至少 3 个盈利日（≥0.5%）</span></td><td><span class="badge badge-partial"><span data-lang="en">±2min restriction</span><span data-lang="zh">新闻前后 ±2 分钟禁止</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td>1:30</td></tr>
+                <tr data-firm="The5ers"><td><strong>The5ers</strong></td><td>Bootcamp (3-Step)</td><td><span data-lang="en">3% (Daily Pause)</span><span data-lang="zh">3%（每日暂停）</span></td><td><span data-lang="en">6% (Stop Out)</span><span data-lang="zh">6%（强平）</span></td><td><span data-lang="en">10% per phase</span><span data-lang="zh">每阶段 10%</span></td><td><span data-lang="en">5 days</span><span data-lang="zh">5 天</span></td><td><span data-lang="en">Inactivity: max 30 days</span><span data-lang="zh">不活跃：最多 30 天</span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td>1:30</td></tr>
+                <tr data-firm="E8 Markets"><td><strong>E8 Markets</strong></td><td>E8 One (1-Step)</td><td><span data-lang="en">3–9.2% (customizable)</span><span data-lang="zh">3–9.2%（可自定义）</span></td><td><span data-lang="en">Trailing (HWM)</span><span data-lang="zh">追踪（最高净值）</span></td><td><span data-lang="en">6–21% (customizable)</span><span data-lang="zh">6–21%（可自定义）</span></td><td><span data-lang="en">1 day</span><span data-lang="zh">1 天</span></td><td><span data-lang="en">Best Day 40%; Min 5 days (≥0.3%)</span><span data-lang="zh">最佳日 40%；至少 5 天（≥0.3%）</span></td><td><span class="badge badge-partial"><span data-lang="en">Funded: ±5min</span><span data-lang="zh">资金阶段：±5 分钟禁止</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span data-lang="en">1:30 FX / 1:15 Idx / 1:1 Crypto</span><span data-lang="zh">外汇 1:30 / 指数 1:15 / 加密 1:1</span></td></tr>
+                <tr data-firm="E8 Markets"><td><strong>E8 Markets</strong></td><td>E8 Signature (1-Step)</td><td><span data-lang="en">3–7% (customizable)</span><span data-lang="zh">3–7%（可自定义）</span></td><td><span data-lang="en">8% (Initial Balance)</span><span data-lang="zh">8%（初始余额）</span></td><td><span data-lang="en">Customizable</span><span data-lang="zh">可自定义</span></td><td><span data-lang="en">1 day</span><span data-lang="zh">1 天</span></td><td><span data-lang="en">Best Day 35%; Min 5 days (≥0.3%)</span><span data-lang="zh">最佳日 35%；至少 5 天（≥0.3%）</span></td><td><span class="badge badge-partial"><span data-lang="en">Funded: ±5min</span><span data-lang="zh">资金阶段：±5 分钟禁止</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span data-lang="en">1:30 FX / 1:15 Idx / 1:1 Crypto</span><span data-lang="zh">外汇 1:30 / 指数 1:15 / 加密 1:1</span></td></tr>
+                <tr data-firm="E8 Markets"><td><strong>E8 Markets</strong></td><td>E8 Pro (1-Step)</td><td><span data-lang="en">2% (soft pause)</span><span data-lang="zh">2%（软暂停）</span></td><td><span data-lang="en">8% (Initial Balance)</span><span data-lang="zh">8%（初始余额）</span></td><td>8%</td><td><span data-lang="en">4 days</span><span data-lang="zh">4 天</span></td><td><span data-lang="en">Best Day 40%; Min 4 days (≥0.5%); Min payout 4%</span><span data-lang="zh">最佳日 40%；至少 4 天（≥0.5%）；最低出金 4%</span></td><td><span class="badge badge-partial"><span data-lang="en">Funded: ±5min</span><span data-lang="zh">资金阶段：±5 分钟禁止</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span data-lang="en">1:30 FX / 1:15 Idx / 1:1 Crypto</span><span data-lang="zh">外汇 1:30 / 指数 1:15 / 加密 1:1</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="1-step"><td><strong>FXIFY</strong></td><td>One Phase</td><td>5%</td><td>6%</td><td>10%</td><td><span data-lang="en">5 days</span><span data-lang="zh">5 天</span></td><td><span class="badge badge-no"><span data-lang="en">None</span><span data-lang="zh">无</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span data-lang="en">1:30 / 1:50 upgrade</span><span data-lang="zh">1:30 / 可升级至 1:50</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="2-step"><td><strong>FXIFY</strong></td><td>Two Phase (Classic Static)</td><td>5%</td><td>10%</td><td><span data-lang="en">10% (P1), 5% (P2)</span><span data-lang="zh">10%（第1阶段），5%（第2阶段）</span></td><td><span data-lang="en">4 days</span><span data-lang="zh">4 天</span></td><td><span data-lang="en">Best Day 25% (Funded)</span><span data-lang="zh">最佳日 25%（资金阶段）</span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span data-lang="en">1:30 / 1:50 upgrade</span><span data-lang="zh">1:30 / 可升级至 1:50</span></td></tr>
+                <tr data-firm="FXIFY"><td><strong>FXIFY</strong></td><td>Two Phase (Standard Trailing)</td><td>4%</td><td><span data-lang="en">10% (Trailing)</span><span data-lang="zh">10%（追踪）</span></td><td><span data-lang="en">10% (P1), 5% (P2)</span><span data-lang="zh">10%（第1阶段），5%（第2阶段）</span></td><td><span data-lang="en">5 days</span><span data-lang="zh">5 天</span></td><td><span class="badge badge-no"><span data-lang="en">None</span><span data-lang="zh">无</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span data-lang="en">1:30 / 1:50 upgrade</span><span data-lang="zh">1:30 / 可升级至 1:50</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="3-step"><td><strong>FXIFY</strong></td><td>Three Phase</td><td>3%</td><td>5%</td><td><span data-lang="en">5% per phase</span><span data-lang="zh">每阶段 5%</span></td><td><span data-lang="en">5 days</span><span data-lang="zh">5 天</span></td><td><span class="badge badge-no"><span data-lang="en">None</span><span data-lang="zh">无</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span data-lang="en">1:30 / 1:50 upgrade</span><span data-lang="zh">1:30 / 可升级至 1:50</span></td></tr>
+                <tr data-firm="FXIFY" data-actype="instant"><td><strong>FXIFY</strong></td><td>Instant Funding</td><td>N/A</td><td><span data-lang="en">Trailing</span><span data-lang="zh">追踪</span></td><td><span data-lang="en">None</span><span data-lang="zh">无</span></td><td><span data-lang="en">None</span><span data-lang="zh">无</span></td><td><span data-lang="en">20% (Lite) / 25% (Crypto)</span><span data-lang="zh">20%（Lite）/ 25%（加密）</span></td><td><span class="badge badge-no"><span data-lang="en">±5min restricted</span><span data-lang="zh">±5 分钟禁止</span></span></td><td><span class="badge badge-no"><span data-lang="en">Not Allowed</span><span data-lang="zh">不允许</span></span></td><td><span class="badge badge-no"><span data-lang="en">Prohibited</span><span data-lang="zh">禁止</span></span></td><td>1:30</td></tr>
+                <tr data-firm="FXIFY" data-actype="2-step"><td><strong>FXIFY</strong></td><td>Lightning Challenge</td><td>5%</td><td><span data-lang="en">5% (Trailing)</span><span data-lang="zh">5%（追踪）</span></td><td>10%</td><td><span data-lang="en">3 days</span><span data-lang="zh">3 天</span></td><td><span data-lang="en">Best Day 30% (both phases)</span><span data-lang="zh">最佳日 30%（两个阶段）</span></td><td><span class="badge badge-no"><span data-lang="en">±5min restricted</span><span data-lang="zh">±5 分钟禁止</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-no"><span data-lang="en">Prohibited</span><span data-lang="zh">禁止</span></span></td><td>1:30</td></tr>
+                <tr data-firm="WeMasterTrade" data-actype="2-step"><td><strong>WeMasterTrade</strong></td><td>Challenge Package (2-Phase)</td><td>5%</td><td>10%</td><td><span data-lang="en">8% (P1), 6% (P2)</span><span data-lang="zh">8%（第1阶段），6%（第2阶段）</span></td><td>—</td><td><span data-lang="en">RC Rule: &lt;2% risk per trade idea (Phase 2+)</span><span data-lang="zh">RC 规则：每笔交易风险 &lt;2%（第2阶段起）</span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-partial">—</span></td><td>1:100</td></tr>
+                <tr data-firm="WeMasterTrade" data-actype="instant"><td><strong>WeMasterTrade</strong></td><td>Instant Package</td><td>—</td><td>—</td><td>N/A</td><td><span data-lang="en">None</span><span data-lang="zh">无</span></td><td><span data-lang="en">RC Rule: &lt;2% per trade idea (&lt;1% NoPC)</span><span data-lang="zh">RC 规则：每笔 &lt;2%（NoPC 为 &lt;1%）</span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-yes"><span data-lang="en">Allowed</span><span data-lang="zh">允许</span></span></td><td><span class="badge badge-partial">—</span></td><td>1:100</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="r-noresult" class="no-results hidden">
+        <span data-lang="en">No matching results found.</span><span data-lang="zh">未找到匹配结果。</span>
+    </div>
+</div>
+
+<!-- ==================== CONSISTENCY RULES TAB ==================== -->
+<div id="consistency" class="tab-content">
+    <div class="consistency-summary">
+        <h2><span data-lang="en">Quick Reference — Consistency Rules at a Glance</span><span data-lang="zh">快速参考 — 一致性规则概览</span></h2>
+        <div class="table-wrapper">
+            <table>
+                <thead><tr>
+                    <th><span data-lang="en">Firm</span><span data-lang="zh">公司</span></th>
+                    <th><span data-lang="en">Rule Name</span><span data-lang="zh">规则名称</span></th>
+                    <th><span data-lang="en">Threshold</span><span data-lang="zh">阈值</span></th>
+                    <th><span data-lang="en">Applies To (Programs)</span><span data-lang="zh">适用产品</span></th>
+                    <th><span data-lang="en">Phase</span><span data-lang="zh">阶段</span></th>
+                    <th><span data-lang="en">Official Link</span><span data-lang="zh">官方链接</span></th>
+                </tr></thead>
+                <tbody>
+                    <tr>
+                        <td><strong>FTMO</strong></td>
+                        <td>Best Day Rule</td>
+                        <td><span data-lang="en">Best day ≤ 50% of total positive-day profit</span><span data-lang="zh">单日利润 ≤ 所有盈利日总利润的 50%</span></td>
+                        <td><span data-lang="en">1-Step Challenge &amp; 1-Step Account only</span><span data-lang="zh">仅限 1-Step 挑战及 1-Step 账户</span></td>
+                        <td><span data-lang="en">Evaluation &amp; Funded</span><span data-lang="zh">评估 &amp; 资金阶段</span></td>
+                        <td><a href="https://ftmo.com/au/faq/how-does-the-best-day-rule-50-work-in-ftmo-challenge-1-step/" target="_blank"><span data-lang="en">Official FAQ ↗</span><span data-lang="zh">官方 FAQ ↗</span></a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>FundedNext</strong></td>
+                        <td><span data-lang="en">No dedicated consistency rule</span><span data-lang="zh">无专属一致性规则</span></td>
+                        <td>—</td>
+                        <td><span data-lang="en">All programs (Stellar Instant has no rules at all)</span><span data-lang="zh">所有产品（Stellar Instant 无任何规则）</span></td>
+                        <td>—</td>
+                        <td><a href="https://help.fundednext.com/en/articles/8021076-what-rules-do-i-need-to-follow-in-the-stellar-2-step-challenge" target="_blank"><span data-lang="en">Help Center ↗</span><span data-lang="zh">帮助中心 ↗</span></a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>The5ers</strong></td>
+                        <td><span data-lang="en">Minimum Profitable Days</span><span data-lang="zh">最少盈利天数</span></td>
+                        <td><span data-lang="en">Min 3 profitable days (≥ 0.5% each) per payout cycle</span><span data-lang="zh">每次出金前至少 3 个盈利日（每日 ≥ 0.5%）</span></td>
+                        <td><span data-lang="en">High Stakes only</span><span data-lang="zh">仅限 High Stakes</span></td>
+                        <td><span data-lang="en">Funded</span><span data-lang="zh">资金阶段</span></td>
+                        <td><a href="https://the5ers.com/high-stakes/" target="_blank"><span data-lang="en">High Stakes Page ↗</span><span data-lang="zh">High Stakes 页面 ↗</span></a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>E8 Markets</strong></td>
+                        <td><span data-lang="en">Best Day Rule + Min Profitable Days</span><span data-lang="zh">最佳日规则 + 最少盈利天数</span></td>
+                        <td><span data-lang="en">E8 One/Pro: 40% Best Day; E8 Signature: 35% Best Day</span><span data-lang="zh">E8 One/Pro：最佳日 40%；E8 Signature：最佳日 35%</span></td>
+                        <td>E8 One, E8 Signature, E8 Pro</td>
+                        <td><span data-lang="en">Funded (payout condition)</span><span data-lang="zh">资金阶段（出金条件）</span></td>
+                        <td><a href="https://help.e8markets.com/en/articles/9448349-what-is-the-payout-on-demand" target="_blank"><span data-lang="en">Help Center ↗</span><span data-lang="zh">帮助中心 ↗</span></a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>FXIFY</strong></td>
+                        <td><span data-lang="en">20% / 25% / 30% Consistency Rule</span><span data-lang="zh">20% / 25% / 30% 一致性规则</span></td>
+                        <td><span data-lang="en">Best day ≤ 20/25/30% of total profits (by program)</span><span data-lang="zh">单日利润 ≤ 总利润的 20/25/30%（按产品线）</span></td>
+                        <td><span data-lang="en">Instant Lite (20%), Crypto/2-Phase Static (25%), Lightning (30%)</span><span data-lang="zh">Instant Lite（20%），加密/2-Phase Static（25%），Lightning（30%）</span></td>
+                        <td><span data-lang="en">Funded (Lightning: both phases)</span><span data-lang="zh">资金阶段（Lightning 含评估阶段）</span></td>
+                        <td><a href="https://fxify.com/faqs/" target="_blank"><span data-lang="en">FXIFY FAQs ↗</span><span data-lang="zh">FXIFY FAQ ↗</span></a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>WeMasterTrade</strong></td>
+                        <td>Risk Consistency Rule (RC Rule)</td>
+                        <td><span data-lang="en">Risk per trade idea &lt; 2% of initial balance (1% for NoPC)</span><span data-lang="zh">每笔交易风险 &lt; 初始余额的 2%（NoPC 为 1%）</span></td>
+                        <td><span data-lang="en">Challenge Package (Phase 2+), Instant Package</span><span data-lang="zh">挑战套餐（第2阶段起），即时套餐</span></td>
+                        <td><span data-lang="en">Phase 2 &amp; Funded</span><span data-lang="zh">第2阶段及资金阶段</span></td>
+                        <td><a href="https://faq.wemastertrade.com/what-is-the-risk-consistency-rule/" target="_blank"><span data-lang="en">Official FAQ ↗</span><span data-lang="zh">官方 FAQ ↗</span></a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="consistency-grid">
+
+        <!-- FTMO -->
+        <div class="firm-card">
+            <div class="firm-card-header">
+                <h3>FTMO</h3>
+                <span class="firm-badge"><span data-lang="en">Has Consistency Rule</span><span data-lang="zh">有一致性规则</span></span>
+            </div>
+            <div class="firm-card-body">
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Rule Name</span><span data-lang="zh">规则名称</span></span><span class="rule-value"><strong>Best Day Rule (50%)</strong></span></div>
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Applies To</span><span data-lang="zh">适用范围</span></span><span class="rule-value"><span data-lang="en">FTMO Challenge: 1-Step &amp; FTMO Account: 1-Step only<br><em>(2-Step Challenge has NO consistency rule)</em></span><span data-lang="zh">仅限 FTMO Challenge: 1-Step 及 FTMO Account: 1-Step<br><em>（2-Step 挑战无一致性规则）</em></span></span></div>
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Phase</span><span data-lang="zh">阶段</span></span><span class="rule-value"><span data-lang="en">Evaluation &amp; Funded</span><span data-lang="zh">评估阶段 &amp; 资金阶段</span></span></div>
+                <div class="rule-detail-box">
+                    <span data-lang="en">Your most profitable single day ("Best Day") must not exceed <strong>50% of your total Positive Days' Profit</strong>. Breaching this threshold is <em>not</em> a hard breach — you simply need to continue trading until the Best Day's share falls back to ≤ 50%. This rule must be satisfied to pass the 1-Step Challenge or to receive a Reward on a 1-Step Account.</span>
+                    <span data-lang="zh">您最盈利的单日（"最佳日"）不得超过<strong>所有盈利日总利润的 50%</strong>。超过此阈值并不会直接导致账户被终止，您只需继续交易，直到最佳日占比降至 ≤ 50%。通过 1-Step 挑战或在 1-Step 账户中获得奖励，必须满足此规则。</span>
+                </div>
+                <div class="source-links">
+                    <a class="source-link official" href="https://ftmo.com/au/faq/how-does-the-best-day-rule-50-work-in-ftmo-challenge-1-step/" target="_blank">🔗 <span data-lang="en">Official FAQ</span><span data-lang="zh">官方 FAQ</span></a>
+                    <a class="source-link secondary" href="https://ftmo.com/en/trading-objectives/" target="_blank"><span data-lang="en">Trading Objectives</span><span data-lang="zh">交易目标页面</span></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- FundedNext -->
+        <div class="firm-card">
+            <div class="firm-card-header">
+                <h3>FundedNext</h3>
+                <span class="firm-badge warn"><span data-lang="en">No Dedicated Rule</span><span data-lang="zh">无专属规则</span></span>
+            </div>
+            <div class="firm-card-body">
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Rule Name</span><span data-lang="zh">规则名称</span></span><span class="rule-value"><span data-lang="en">No dedicated consistency rule</span><span data-lang="zh">无专属一致性规则</span></span></div>
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Applies To</span><span data-lang="zh">适用范围</span></span><span class="rule-value"><span data-lang="en">All programs — Stellar 2-Step, 1-Step, Lite, Instant</span><span data-lang="zh">所有产品线 — Stellar 2-Step、1-Step、Lite、Instant</span></span></div>
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Phase</span><span data-lang="zh">阶段</span></span><span class="rule-value">—</span></div>
+                <div class="rule-detail-box">
+                    <span data-lang="en">FundedNext does <strong>not</strong> impose a profit-distribution consistency rule. Traders must meet minimum trading day and trade count requirements per program:<br><br>
+                    • <strong>Stellar 2-Step:</strong> Min 5 trading days &amp; 5 trades (evaluation)<br>
+                    • <strong>Stellar 1-Step:</strong> Min 2 trading days &amp; 2 trades; EAs &amp; third-party indicators not allowed<br>
+                    • <strong>Stellar Lite:</strong> Min 5 trading days &amp; 5 trades (evaluation)<br>
+                    • <strong>Stellar Instant:</strong> No minimum days, no consistency rules — full flexibility</span>
+                    <span data-lang="zh">FundedNext <strong>不设置</strong>利润分布一致性规则（如"最佳日"上限）。各产品线需满足最低交易天数和交易笔数要求：<br><br>
+                    • <strong>Stellar 2-Step：</strong>评估阶段至少 5 个交易日 &amp; 5 笔交易<br>
+                    • <strong>Stellar 1-Step：</strong>至少 2 个交易日 &amp; 2 笔交易；禁止使用 EA 及第三方指标<br>
+                    • <strong>Stellar Lite：</strong>评估阶段至少 5 个交易日 &amp; 5 笔交易<br>
+                    • <strong>Stellar Instant：</strong>无最低天数，无一致性规则 — 完全灵活</span>
+                </div>
+                <div class="source-links">
+                    <a class="source-link official" href="https://help.fundednext.com/en/articles/8021076-what-rules-do-i-need-to-follow-in-the-stellar-2-step-challenge" target="_blank">🔗 <span data-lang="en">Help Center (2-Step Rules)</span><span data-lang="zh">帮助中心（2-Step 规则）</span></a>
+                    <a class="source-link secondary" href="https://fundednext.com/blog/prop-firm-trading-rules" target="_blank"><span data-lang="en">Trading Rules Blog</span><span data-lang="zh">交易规则博客</span></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- The5ers -->
+        <div class="firm-card">
+            <div class="firm-card-header">
+                <h3>The5ers</h3>
+                <span class="firm-badge"><span data-lang="en">Has Consistency Rule</span><span data-lang="zh">有一致性规则</span></span>
+            </div>
+            <div class="firm-card-body">
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Rule Name</span><span data-lang="zh">规则名称</span></span><span class="rule-value"><span data-lang="en"><strong>Minimum Profitable Days</strong> + Inactivity Rule</span><span data-lang="zh"><strong>最少盈利天数</strong> + 不活跃规则</span></span></div>
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Applies To</span><span data-lang="zh">适用范围</span></span><span class="rule-value"><span data-lang="en">High Stakes (2-Step) — Funded Phase<br>All programs — Inactivity Rule</span><span data-lang="zh">High Stakes（2-Step）— 资金阶段<br>所有产品 — 不活跃规则</span></span></div>
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Phase</span><span data-lang="zh">阶段</span></span><span class="rule-value"><span data-lang="en">Funded (Min Profitable Days); Eval &amp; Funded (Inactivity)</span><span data-lang="zh">资金阶段（最少盈利天数）；评估 &amp; 资金阶段（不活跃规则）</span></span></div>
+                <div class="rule-detail-box">
+                    <span data-lang="en"><strong>High Stakes — Minimum Profitable Days:</strong> To request a payout, traders must have a minimum of <strong>3 profitable trading days</strong>, where each profitable day means closed positions generated at least <strong>0.5% profit</strong> of the initial balance.<br><br>
+                    <strong>All Programs — Inactivity Rule:</strong> Accounts without any trading activity for more than <strong>30 consecutive days</strong> will be expired and closed.<br><br>
+                    <strong>News Trading Restrictions:</strong> High Stakes restricts executing orders within 2 minutes before/after high-impact news. Hyper Growth and Bootcamp restrict bracket strategies around news events.</span>
+                    <span data-lang="zh"><strong>High Stakes — 最少盈利天数：</strong>申请出金前，交易者必须有至少 <strong>3 个盈利交易日</strong>，每个盈利日的已平仓利润须达到初始余额的 <strong>0.5%</strong> 以上。<br><br>
+                    <strong>所有产品 — 不活跃规则：</strong>连续 <strong>30 天</strong>无任何交易活动的账户将被自动关闭。<br><br>
+                    <strong>新闻交易限制：</strong>High Stakes 禁止在高影响力新闻发布前后 2 分钟内下单。Hyper Growth 和 Bootcamp 禁止在新闻期间使用括号策略。</span>
+                </div>
+                <div class="source-links">
+                    <a class="source-link official" href="https://the5ers.com/high-stakes/" target="_blank">🔗 <span data-lang="en">High Stakes Page</span><span data-lang="zh">High Stakes 页面</span></a>
+                    <a class="source-link secondary" href="https://www.luxalgo.com/prop-firms/the-5-ers/" target="_blank"><span data-lang="en">Third-Party Review</span><span data-lang="zh">第三方评测</span></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- E8 Markets -->
+        <div class="firm-card">
+            <div class="firm-card-header">
+                <h3>E8 Markets</h3>
+                <span class="firm-badge"><span data-lang="en">Has Consistency Rule</span><span data-lang="zh">有一致性规则</span></span>
+            </div>
+            <div class="firm-card-body">
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Rule Name</span><span data-lang="zh">规则名称</span></span><span class="rule-value"><span data-lang="en"><strong>Best Day Rule</strong> + <strong>Minimum Profitable Days</strong></span><span data-lang="zh"><strong>最佳日规则</strong> + <strong>最少盈利天数</strong></span></span></div>
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Applies To</span><span data-lang="zh">适用范围</span></span><span class="rule-value"><span data-lang="en">E8 One, E8 One Crypto, E8 Signature Forex, E8 Signature Crypto, E8 Pro — Funded Phase only</span><span data-lang="zh">E8 One、E8 One Crypto、E8 Signature Forex、E8 Signature Crypto、E8 Pro — 仅限资金阶段</span></span></div>
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Phase</span><span data-lang="zh">阶段</span></span><span class="rule-value"><span data-lang="en">Funded (payout condition only)</span><span data-lang="zh">资金阶段（仅为出金条件）</span></span></div>
+                <div class="rule-detail-box">
+                    <span data-lang="en"><strong>E8 One &amp; E8 One Crypto:</strong><br>
+                    • Best Day Rule: No single trading day may exceed <strong>40%</strong> of total generated profits<br>
+                    • Minimum Profitable Days: <strong>5 profitable days</strong> (≥ 0.3% realized closed P&amp;L) between each payout<br>
+                    • Net profit (payout share) must be greater than 50% of daily drawdown<br><br>
+                    <strong>E8 Signature Forex &amp; E8 Signature Crypto:</strong><br>
+                    • Best Day Rule: No single trading day may exceed <strong>35%</strong> of total generated profits<br>
+                    • Minimum Profitable Days: <strong>5 profitable days</strong> (≥ 0.3% realized closed P&amp;L) between each payout<br><br>
+                    <strong>E8 Pro:</strong><br>
+                    • Best Day Rule: No single day may exceed <strong>40%</strong> of total profits<br>
+                    • Minimum Profitable Days: <strong>4 profitable days</strong> (≥ 0.5% realized closed P&amp;L)<br>
+                    • Minimum payout request: 4% of the initial or scaled account balance</span>
+                    <span data-lang="zh"><strong>E8 One &amp; E8 One Crypto：</strong><br>
+                    • 最佳日规则：单个交易日利润不得超过总利润的 <strong>40%</strong><br>
+                    • 最少盈利天数：每次出金之间至少有 <strong>5 个盈利日</strong>（已平仓 P&amp;L ≥ 0.3%）<br>
+                    • 净利润（出金份额）须大于每日回撤的 50%<br><br>
+                    <strong>E8 Signature Forex &amp; E8 Signature Crypto：</strong><br>
+                    • 最佳日规则：单个交易日利润不得超过总利润的 <strong>35%</strong><br>
+                    • 最少盈利天数：每次出金之间至少有 <strong>5 个盈利日</strong>（已平仓 P&amp;L ≥ 0.3%）<br><br>
+                    <strong>E8 Pro：</strong><br>
+                    • 最佳日规则：单个交易日利润不得超过总利润的 <strong>40%</strong><br>
+                    • 最少盈利天数：至少 <strong>4 个盈利日</strong>（已平仓 P&amp;L ≥ 0.5%）<br>
+                    • 最低出金申请金额：初始或缩放账户余额的 4%</span>
+                </div>
+                <div class="source-links">
+                    <a class="source-link official" href="https://help.e8markets.com/en/articles/9448349-what-is-the-payout-on-demand" target="_blank">🔗 <span data-lang="en">Payout on Demand (Official)</span><span data-lang="zh">按需出金（官方）</span></a>
+                    <a class="source-link secondary" href="https://www.quantvps.com/blog/e8-markets-payout-rules" target="_blank"><span data-lang="en">QuantVPS Payout Guide</span><span data-lang="zh">QuantVPS 出金指南</span></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- FXIFY -->
+        <div class="firm-card">
+            <div class="firm-card-header">
+                <h3>FXIFY</h3>
+                <span class="firm-badge"><span data-lang="en">Has Consistency Rule</span><span data-lang="zh">有一致性规则</span></span>
+            </div>
+            <div class="firm-card-body">
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Rule Name</span><span data-lang="zh">规则名称</span></span><span class="rule-value"><span data-lang="en"><strong>20% / 25% / 30% Consistency Rule</strong> (program-specific)</span><span data-lang="zh"><strong>20% / 25% / 30% 一致性规则</strong>（按产品线区分）</span></span></div>
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Applies To</span><span data-lang="zh">适用范围</span></span><span class="rule-value"><span data-lang="en">Instant Lite, Crypto Instant, 2-Phase Static, Lightning Challenge</span><span data-lang="zh">Instant Lite、Crypto Instant、2-Phase Static、Lightning Challenge</span></span></div>
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Phase</span><span data-lang="zh">阶段</span></span><span class="rule-value"><span data-lang="en">Funded (most); Evaluation &amp; Funded (Lightning)</span><span data-lang="zh">资金阶段（大多数）；评估 &amp; 资金阶段（Lightning）</span></span></div>
+                <div class="rule-detail-box">
+                    <span data-lang="en">FXIFY applies different consistency thresholds depending on the program:<br><br>
+                    • <strong>20% Rule</strong> — Instant Funding Lite (Funded): Best day's profit cannot exceed 20% of total profits<br>
+                    • <strong>25% Rule</strong> — Crypto Instant Funded, Crypto 1-Phase Funded, 2-Phase Classic/Static (Funded): Best day's profit cannot exceed 25% of total profits; payout blocked until condition is met<br>
+                    • <strong>30% Rule</strong> — Lightning Challenge (Evaluation &amp; Funded): No single trading day may exceed 30% of total generated profits<br><br>
+                    <strong>Programs with NO consistency rule:</strong> One Phase, Two Phase Standard (Trailing), Three Phase</span>
+                    <span data-lang="zh">FXIFY 根据不同产品线设置不同的一致性阈值：<br><br>
+                    • <strong>20% 规则</strong> — Instant Funding Lite（资金阶段）：单日利润不得超过总利润的 20%<br>
+                    • <strong>25% 规则</strong> — Crypto Instant Funded、Crypto 1-Phase Funded、2-Phase Classic/Static（资金阶段）：单日利润不得超过总利润的 25%；不满足条件则出金被阻止<br>
+                    • <strong>30% 规则</strong> — Lightning Challenge（评估 &amp; 资金阶段）：单日利润不得超过总利润的 30%<br><br>
+                    <strong>无一致性规则的产品：</strong>One Phase、Two Phase Standard（追踪）、Three Phase</span>
+                </div>
+                <div class="source-links">
+                    <a class="source-link official" href="https://fxify.com/faqs/" target="_blank">🔗 <span data-lang="en">FXIFY FAQs</span><span data-lang="zh">FXIFY FAQ</span></a>
+                    <a class="source-link secondary" href="https://tradingfinder.com/props/fxify/rules/" target="_blank"><span data-lang="en">TradingFinder Rules</span><span data-lang="zh">TradingFinder 规则页</span></a>
+                    <a class="source-link secondary" href="https://www.quantvps.com/prop-firms/fxify" target="_blank">QuantVPS</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- WeMasterTrade -->
+        <div class="firm-card">
+            <div class="firm-card-header">
+                <h3>WeMasterTrade</h3>
+                <span class="firm-badge"><span data-lang="en">Has Consistency Rule</span><span data-lang="zh">有一致性规则</span></span>
+            </div>
+            <div class="firm-card-body">
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Rule Name</span><span data-lang="zh">规则名称</span></span><span class="rule-value"><strong>Risk Consistency Rule (RC Rule)</strong></span></div>
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Applies To</span><span data-lang="zh">适用范围</span></span><span class="rule-value"><span data-lang="en">Challenge Package (Phase 2 &amp; Funded); Instant Package (all phases)</span><span data-lang="zh">挑战套餐（第2阶段 &amp; 资金阶段）；即时套餐（所有阶段）</span></span></div>
+                <div class="rule-row"><span class="rule-label"><span data-lang="en">Phase</span><span data-lang="zh">阶段</span></span><span class="rule-value"><span data-lang="en">Phase 2 onwards (does NOT apply to Challenge Phase 1)</span><span data-lang="zh">第2阶段起（不适用于挑战第1阶段）</span></span></div>
+                <div class="rule-detail-box">
+                    <span data-lang="en">The Risk Consistency Rule (RC Rule) requires that the <strong>risk per trade idea must remain consistent</strong>, capped at less than <strong>2% of the initial account balance</strong> per trade idea (including floating loss, swap, commission, and fees).<br><br>
+                    <strong>Definition of a "trade idea":</strong><br>
+                    • Trades on the same symbol in the same direction = one trade idea<br>
+                    • Multiple trades on the same asset/direction closed simultaneously = one trade idea<br>
+                    • Trades on different assets or different directions = separate trade ideas<br><br>
+                    <strong>Allowed:</strong> Multiple positions on different assets/directions with &lt;2% risk each; sequential positions on same asset with &lt;2% risk each<br><br>
+                    <strong>Not Allowed:</strong> Multiple positions on the same asset in the same direction with combined risk &gt;2%<br><br>
+                    <strong>Special case:</strong> For 51010-NoPC Packages, the RC ratio is reduced to <strong>1%</strong>.</span>
+                    <span data-lang="zh">风险一致性规则（RC 规则）要求<strong>每笔交易理念的风险必须保持一致</strong>，上限为初始账户余额的 <strong>2%</strong>（含浮动亏损、隔夜利息、佣金及手续费）。<br><br>
+                    <strong>"交易理念"的定义：</strong><br>
+                    • 同一品种同一方向的交易 = 一个交易理念<br>
+                    • 同一品种同一方向同时平仓的多笔交易 = 一个交易理念<br>
+                    • 不同品种或不同方向的交易 = 独立的交易理念<br><br>
+                    <strong>允许：</strong>在不同品种/方向开多个仓位，每个风险 &lt;2%；在同一品种上顺序开平仓，每次风险 &lt;2%<br><br>
+                    <strong>不允许：</strong>在同一品种同一方向开多个仓位，合计风险 &gt;2%<br><br>
+                    <strong>特殊情况：</strong>51010-NoPC 套餐的 RC 比率降低至 <strong>1%</strong>。</span>
+                </div>
+                <div class="source-links">
+                    <a class="source-link official" href="https://faq.wemastertrade.com/what-is-the-risk-consistency-rule/" target="_blank">🔗 <span data-lang="en">Official FAQ (RC Rule)</span><span data-lang="zh">官方 FAQ（RC 规则）</span></a>
+                    <a class="source-link secondary" href="https://wemastertrade.com/risk-consistency-calculation-updated-for-greater-flexibility/" target="_blank"><span data-lang="en">RC Rule Update Blog</span><span data-lang="zh">RC 规则更新博客</span></a>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- end consistency-grid -->
+</div>
+
+<!-- ==================== COMPARATOR TAB ==================== -->
+<div id="compare" class="tab-content">
+    <div class="comparator-intro">
+        <h2>🔍 <span data-lang="en">Account Comparator</span><span data-lang="zh">账户横向对比</span></h2>
+        <p>
+            <span data-lang="en">Select an account size to compare all available accounts across platforms side by side. Use the filters below to narrow down by key metrics, and click any column header to sort.</span>
+            <span data-lang="zh">选择账户规模，横向对比各平台同类账户的关键指标。使用下方过滤器精细筛选，点击列标题可升降序排序。</span>
+        </p>
+    </div>
+
+    <!-- Account Size Selector -->
+    <div class="size-selector-bar">
+        <span class="size-label"><span data-lang="en">Account Size:</span><span data-lang="zh">账户规模：</span></span>
+        <button class="size-btn active" data-size="all" onclick="setCmpSize(this)">
+            <span data-lang="en">All Sizes</span><span data-lang="zh">全部规模</span>
+        </button>
+        <button class="size-btn" data-size="5000" onclick="setCmpSize(this)">$5,000</button>
+        <button class="size-btn" data-size="10000" onclick="setCmpSize(this)">$10,000</button>
+        <button class="size-btn" data-size="25000" onclick="setCmpSize(this)">$25,000</button>
+        <button class="size-btn" data-size="50000" onclick="setCmpSize(this)">$50,000</button>
+        <button class="size-btn" data-size="100000" onclick="setCmpSize(this)">$100,000</button>
+        <button class="size-btn" data-size="200000" onclick="setCmpSize(this)">$200,000</button>
+    </div>
+
+    <!-- Multi-dimension Filters -->
+    <div class="cmp-filter-bar">
+        <div class="cmp-filter-group">
+            <label><span data-lang="en">Fee Refund</span><span data-lang="zh">返还报名费</span></label>
+            <select id="cmp-refund" onchange="renderCmpTable()">
+                <option value="" data-en="All" data-zh="全部">All</option>
+                <option value="yes" data-en="Yes (Refundable)" data-zh="是（可返还）">Yes (Refundable)</option>
+                <option value="no" data-en="No / N/A" data-zh="否 / 不适用">No / N/A</option>
+            </select>
+        </div>
+        <div class="cmp-filter-group">
+            <label><span data-lang="en">Account Type</span><span data-lang="zh">账户类型</span></label>
+            <select id="cmp-actype" onchange="renderCmpTable()">
+                <option value="" data-en="All Types" data-zh="全部类型">All Types</option>
+                <option value="1-step" data-en="1-Step" data-zh="1 阶段">1-Step</option>
+                <option value="2-step" data-en="2-Step" data-zh="2 阶段">2-Step</option>
+                <option value="3-step" data-en="3-Step" data-zh="3 阶段">3-Step</option>
+                <option value="instant" data-en="Instant / No Eval" data-zh="即时 / 无评估">Instant / No Eval</option>
+            </select>
+        </div>
+        <div class="cmp-filter-group">
+            <label><span data-lang="en">Min Profit Split %</span><span data-lang="zh">最低分润比例 %</span></label>
+            <input type="number" id="cmp-minsplit" min="0" max="100" placeholder="e.g. 80" oninput="renderCmpTable()">
+        </div>
+        <div class="cmp-filter-group">
+            <label><span data-lang="en">Max Daily DD %</span><span data-lang="zh">最大每日回撤上限 %</span></label>
+            <input type="number" id="cmp-maxdaily" min="0" max="20" step="0.5" placeholder="e.g. 5" oninput="renderCmpTable()">
+        </div>
+        <div class="cmp-filter-group">
+            <label><span data-lang="en">Max Total DD %</span><span data-lang="zh">最大总回撤上限 %</span></label>
+            <input type="number" id="cmp-maxtotal" min="0" max="30" step="0.5" placeholder="e.g. 10" oninput="renderCmpTable()">
+        </div>
+        <div class="cmp-filter-group">
+            <label><span data-lang="en">Consistency Rule</span><span data-lang="zh">一致性规则</span></label>
+            <select id="cmp-consistency" onchange="renderCmpTable()">
+                <option value="" data-en="All" data-zh="全部">All</option>
+                <option value="none" data-en="None" data-zh="无">None</option>
+                <option value="has" data-en="Has Rule" data-zh="有规则">Has Rule</option>
+            </select>
+        </div>
+        <button class="cmp-reset-btn" onclick="resetCmpFilters()">
+            <span data-lang="en">↺ Reset Filters</span><span data-lang="zh">↺ 重置过滤器</span>
+        </button>
+    </div>
+
+    <!-- Comparator Table -->
+    <div class="cmp-table-wrapper">
+        <table id="cmp-table">
+            <thead>
+                <tr>
+                    <th onclick="sortCmpTable(0)" data-col="0"><span data-lang="en">Firm</span><span data-lang="zh">平台</span><span class="sort-icon"></span></th>
+                    <th onclick="sortCmpTable(1)" data-col="1"><span data-lang="en">Account Name</span><span data-lang="zh">账户名称</span><span class="sort-icon"></span></th>
+                    <th onclick="sortCmpTable(2)" data-col="2"><span data-lang="en">Type</span><span data-lang="zh">类型</span><span class="sort-icon"></span></th>
+                    <th onclick="sortCmpTable(3)" data-col="3"><span data-lang="en">Size</span><span data-lang="zh">规模</span><span class="sort-icon"></span></th>
+                    <th onclick="sortCmpTable(4)" data-col="4"><span data-lang="en">Price</span><span data-lang="zh">报名费</span><span class="sort-icon"></span></th>
+                    <th onclick="sortCmpTable(5)" data-col="5"><span data-lang="en">Profit Split</span><span data-lang="zh">分润比例</span><span class="sort-icon"></span></th>
+                    <th onclick="sortCmpTable(6)" data-col="6"><span data-lang="en">Daily DD</span><span data-lang="zh">每日回撤</span><span class="sort-icon"></span></th>
+                    <th onclick="sortCmpTable(7)" data-col="7"><span data-lang="en">Max DD</span><span data-lang="zh">最大回撤</span><span class="sort-icon"></span></th>
+                    <th onclick="sortCmpTable(8)" data-col="8"><span data-lang="en">Profit Target</span><span data-lang="zh">利润目标</span><span class="sort-icon"></span></th>
+                    <th onclick="sortCmpTable(9)" data-col="9"><span data-lang="en">Fee Refund</span><span data-lang="zh">返还报名费</span><span class="sort-icon"></span></th>
+                    <th onclick="sortCmpTable(10)" data-col="10"><span data-lang="en">Consistency Rule</span><span data-lang="zh">一致性规则</span><span class="sort-icon"></span></th>
+                    <th onclick="sortCmpTable(11)" data-col="11"><span data-lang="en">Commission / Spread</span><span data-lang="zh">佣金 / 手续费</span><span class="sort-icon"></span></th>
+                    <th onclick="sortCmpTable(12)" data-col="12"><span data-lang="en">Min Trading Days</span><span data-lang="zh">最少交易天数</span><span class="sort-icon"></span></th>
+                </tr>
+            </thead>
+            <tbody id="cmp-tbody">
+            </tbody>
+        </table>
+    </div>
+    <div id="cmp-noresult" class="cmp-no-data hidden">
+        <span data-lang="en">No accounts match the selected filters. Try adjusting your criteria.</span>
+        <span data-lang="zh">没有账户符合当前过滤条件，请尝试调整筛选标准。</span>
+    </div>
+    <div class="cmp-legend">
+        <span><span class="legend-dot" style="background:#dcfce7;border:1px solid #86efac"></span>
+            <span data-lang="en">★ Best value in category (lowest price or highest split for same size)</span>
+            <span data-lang="zh">★ 同规模最优（最低报名费或最高分润）</span>
+        </span>
+        <span style="color:#94a3b8"><span data-lang="en">— = Data not available or not applicable</span><span data-lang="zh">— = 数据不适用或暂无</span></span>
+    </div>
+</div>
+
+<footer>
+    <p>
+        <span data-lang="en">Data compiled from official websites and third-party reviews. Last updated: March 2026. Always verify with official sources before making decisions.</span>
+        <span data-lang="zh">数据来源于各官方网站及第三方评测，最后更新：2026 年 3 月。投资决策前请以各
+机构官网最新信息为准。</span>
+    </p>
+    <p style="margin-top:8px;">
+        <a href="https://ftmo.com" target="_blank">FTMO</a> &nbsp;|&nbsp;
+        <a href="https://fundednext.com" target="_blank">FundedNext</a> &nbsp;|&nbsp;
+        <a href="https://the5ers.com" target="_blank">The5ers</a> &nbsp;|&nbsp;
+        <a href="https://e8markets.com" target="_blank">E8 Markets</a> &nbsp;|&nbsp;
+        <a href="https://fxify.com" target="_blank">FXIFY</a> &nbsp;|&nbsp;
+        <a href="https://wemastertrade.com" target="_blank">WeMasterTrade</a>
+    </p>
+</footer>
+
+<script>
+    let currentLang = 'en';
+
+    function toggleLang() {
+        currentLang = currentLang === 'en' ? 'zh' : 'en';
+        document.body.className = 'lang-' + currentLang;
+        const btn = document.getElementById('lang-btn-label');
+        btn.textContent = currentLang === 'en' ? '切换中文' : 'Switch to EN';
+        // Update placeholders
+        document.querySelectorAll('[data-ph-en]').forEach(el => {
+            el.placeholder = currentLang === 'en' ? el.getAttribute('data-ph-en') : el.getAttribute('data-ph-zh');
+        });
+        // Update select options
+        document.querySelectorAll('select option[data-en]').forEach(opt => {
+            opt.textContent = currentLang === 'en' ? opt.getAttribute('data-en') : opt.getAttribute('data-zh');
+        });
+    }
+
+    function switchTab(name, btn) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(name).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    // Current active account type filter
+    let currentActype = '';
+
+    function setActype(btn) {
+        currentActype = btn.getAttribute('data-actype');
+        document.querySelectorAll('.actype-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        filterPricing();
+    }
+
+    function filterPricing() {
+        const q = document.getElementById('p-search').value.toLowerCase();
+        const firm = document.getElementById('p-firm').value;
+        const rows = document.querySelectorAll('#p-table tbody tr');
+        let visible = 0;
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            const rowFirm = row.getAttribute('data-firm') || '';
+            const rowActype = row.getAttribute('data-actype') || '';
+            const matchQ = text.includes(q);
+            const matchF = !firm || rowFirm === firm;
+            const matchA = !currentActype || rowActype === currentActype;
+            if (matchQ && matchF && matchA) { row.classList.remove('hidden'); visible++; }
+            else { row.classList.add('hidden'); }
+        });
+        document.getElementById('p-noresult').classList.toggle('hidden', visible > 0);
+    }
+
+    function filterTable(tableId, searchId, firmId) {
+        const q = document.getElementById(searchId).value.toLowerCase();
+        const firm = document.getElementById(firmId).value;
+        const rows = document.querySelectorAll('#' + tableId + ' tbody tr');
+        let visible = 0;
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            const rowFirm = row.getAttribute('data-firm') || '';
+            const matchQ = text.includes(q);
+            const matchF = !firm || rowFirm === firm;
+            if (matchQ && matchF) { row.classList.remove('hidden'); visible++; }
+            else { row.classList.add('hidden'); }
+        });
+        const noRes = tableId === 'p-table' ? 'p-noresult' : 'r-noresult';
+        document.getElementById(noRes).classList.toggle('hidden', visible > 0);
+    }
+
+    // ==================== COMPARATOR DATA & LOGIC ====================
+    // Each entry: { firm, name, actype, size (number), price (number, USD), priceFmt, split (number, max %), splitFmt, dailyDD (number, %), maxDD (number, %), profitTarget (string), refund (bool|null), consistency (string), commission (string), minDays (number|-1) }
+    const CMP_DATA = [
+        // FTMO 2-Step Challenge
+        { firm:'FTMO', name:'2-Step Challenge', actype:'2-step', size:10000,  price:155,  priceFmt:'€155',    split:90,  splitFmt:'Up to 90%', dailyDD:5,  maxDD:10, profitTarget:'Phase1: 10%, Phase2: 5%', refund:true,  consistency:'Best Day Rule (50%)', commission:'From $0 (no commission on Standard)', minDays:4 },
+        { firm:'FTMO', name:'2-Step Challenge', actype:'2-step', size:25000,  price:250,  priceFmt:'€250',    split:90,  splitFmt:'Up to 90%', dailyDD:5,  maxDD:10, profitTarget:'Phase1: 10%, Phase2: 5%', refund:true,  consistency:'Best Day Rule (50%)', commission:'From $0 (no commission on Standard)', minDays:4 },
+        { firm:'FTMO', name:'2-Step Challenge', actype:'2-step', size:50000,  price:345,  priceFmt:'€345',    split:90,  splitFmt:'Up to 90%', dailyDD:5,  maxDD:10, profitTarget:'Phase1: 10%, Phase2: 5%', refund:true,  consistency:'Best Day Rule (50%)', commission:'From $0 (no commission on Standard)', minDays:4 },
+        { firm:'FTMO', name:'2-Step Challenge', actype:'2-step', size:100000, price:540,  priceFmt:'€540',    split:90,  splitFmt:'Up to 90%', dailyDD:5,  maxDD:10, profitTarget:'Phase1: 10%, Phase2: 5%', refund:true,  consistency:'Best Day Rule (50%)', commission:'From $0 (no commission on Standard)', minDays:4 },
+        { firm:'FTMO', name:'2-Step Challenge', actype:'2-step', size:200000, price:1080, priceFmt:'€1,080',  split:90,  splitFmt:'Up to 90%', dailyDD:5,  maxDD:10, profitTarget:'Phase1: 10%, Phase2: 5%', refund:true,  consistency:'Best Day Rule (50%)', commission:'From $0 (no commission on Standard)', minDays:4 },
+        { firm:'FTMO', name:'1-Step Challenge', actype:'1-step', size:10000,  price:155,  priceFmt:'€155',    split:90,  splitFmt:'90%',        dailyDD:5,  maxDD:10, profitTarget:'10%', refund:false, consistency:'Best Day Rule (50%)', commission:'From $0 (no commission on Standard)', minDays:4 },
+        { firm:'FTMO', name:'1-Step Challenge', actype:'1-step', size:25000,  price:250,  priceFmt:'€250',    split:90,  splitFmt:'90%',        dailyDD:5,  maxDD:10, profitTarget:'10%', refund:false, consistency:'Best Day Rule (50%)', commission:'From $0 (no commission on Standard)', minDays:4 },
+        { firm:'FTMO', name:'1-Step Challenge', actype:'1-step', size:50000,  price:345,  priceFmt:'€345',    split:90,  splitFmt:'90%',        dailyDD:5,  maxDD:10, profitTarget:'10%', refund:false, consistency:'Best Day Rule (50%)', commission:'From $0 (no commission on Standard)', minDays:4 },
+        { firm:'FTMO', name:'1-Step Challenge', actype:'1-step', size:100000, price:540,  priceFmt:'€540',    split:90,  splitFmt:'90%',        dailyDD:5,  maxDD:10, profitTarget:'10%', refund:false, consistency:'Best Day Rule (50%)', commission:'From $0 (no commission on Standard)', minDays:4 },
+        { firm:'FTMO', name:'1-Step Challenge', actype:'1-step', size:200000, price:1080, priceFmt:'€1,080',  split:90,  splitFmt:'90%',        dailyDD:5,  maxDD:10, profitTarget:'10%', refund:false, consistency:'Best Day Rule (50%)', commission:'From $0 (no commission on Standard)', minDays:4 },
+        // FundedNext
+        { firm:'FundedNext', name:'Stellar 2-Step', actype:'2-step', size:6000,   price:60,   priceFmt:'$59.99',   split:80, splitFmt:'80%', dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%', refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:5 },
+        { firm:'FundedNext', name:'Stellar 2-Step', actype:'2-step', size:15000,  price:120,  priceFmt:'$119.99',  split:80, splitFmt:'80%', dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%', refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:5 },
+        { firm:'FundedNext', name:'Stellar 2-Step', actype:'2-step', size:25000,  price:200,  priceFmt:'$199.99',  split:80, splitFmt:'80%', dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%', refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:5 },
+        { firm:'FundedNext', name:'Stellar 2-Step', actype:'2-step', size:50000,  price:300,  priceFmt:'$299.99',  split:80, splitFmt:'80%', dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%', refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:5 },
+        { firm:'FundedNext', name:'Stellar 2-Step', actype:'2-step', size:100000, price:550,  priceFmt:'$549.99',  split:80, splitFmt:'80%', dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%', refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:5 },
+        { firm:'FundedNext', name:'Stellar 2-Step', actype:'2-step', size:200000, price:1100, priceFmt:'$1,099.99',split:80, splitFmt:'80%', dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%', refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:5 },
+        { firm:'FundedNext', name:'Stellar 1-Step', actype:'1-step', size:6000,   price:66,   priceFmt:'$65.99',   split:80, splitFmt:'80%', dailyDD:5, maxDD:10, profitTarget:'10%', refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:5 },
+        { firm:'FundedNext', name:'Stellar 1-Step', actype:'1-step', size:15000,  price:130,  priceFmt:'$129.99',  split:80, splitFmt:'80%', dailyDD:5, maxDD:10, profitTarget:'10%', refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:5 },
+        { firm:'FundedNext', name:'Stellar 1-Step', actype:'1-step', size:25000,  price:220,  priceFmt:'$219.99',  split:80, splitFmt:'80%', dailyDD:5, maxDD:10, profitTarget:'10%', refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:5 },
+        { firm:'FundedNext', name:'Stellar 1-Step', actype:'1-step', size:50000,  price:330,  priceFmt:'$329.99',  split:80, splitFmt:'80%', dailyDD:5, maxDD:10, profitTarget:'10%', refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:5 },
+        { firm:'FundedNext', name:'Stellar 1-Step', actype:'1-step', size:100000, price:570,  priceFmt:'$569.99',  split:80, splitFmt:'80%', dailyDD:5, maxDD:10, profitTarget:'10%', refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:5 },
+        { firm:'FundedNext', name:'Stellar 1-Step', actype:'1-step', size:200000, price:1100, priceFmt:'$1,099.99',split:80, splitFmt:'80%', dailyDD:5, maxDD:10, profitTarget:'10%', refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:5 },
+        { firm:'FundedNext', name:'Stellar Lite',   actype:'1-step', size:5000,   price:33,   priceFmt:'$32.99',   split:80, splitFmt:'80%', dailyDD:4, maxDD:8,  profitTarget:'8%',  refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:3 },
+        { firm:'FundedNext', name:'Stellar Lite',   actype:'1-step', size:10000,  price:60,   priceFmt:'$59.99',   split:80, splitFmt:'80%', dailyDD:4, maxDD:8,  profitTarget:'8%',  refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:3 },
+        { firm:'FundedNext', name:'Stellar Lite',   actype:'1-step', size:25000,  price:140,  priceFmt:'$139.99',  split:80, splitFmt:'80%', dailyDD:4, maxDD:8,  profitTarget:'8%',  refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:3 },
+        { firm:'FundedNext', name:'Stellar Lite',   actype:'1-step', size:50000,  price:230,  priceFmt:'$229.99',  split:80, splitFmt:'80%', dailyDD:4, maxDD:8,  profitTarget:'8%',  refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:3 },
+        { firm:'FundedNext', name:'Stellar Lite',   actype:'1-step', size:100000, price:400,  priceFmt:'$399.99',  split:80, splitFmt:'80%', dailyDD:4, maxDD:8,  profitTarget:'8%',  refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:3 },
+        { firm:'FundedNext', name:'Stellar Lite',   actype:'1-step', size:200000, price:799,  priceFmt:'$798.99',  split:80, splitFmt:'80%', dailyDD:4, maxDD:8,  profitTarget:'8%',  refund:true,  consistency:'None', commission:'No commission (spread-based)', minDays:3 },
+        { firm:'FundedNext', name:'Stellar Instant',actype:'instant',size:2000,   price:60,   priceFmt:'$59.99',   split:15, splitFmt:'15%', dailyDD:2, maxDD:5,  profitTarget:'N/A (no eval)', refund:null, consistency:'Trailing DD (no best-day rule)', commission:'No commission (spread-based)', minDays:-1 },
+        { firm:'FundedNext', name:'Stellar Instant',actype:'instant',size:5000,   price:150,  priceFmt:'$149.99',  split:15, splitFmt:'15%', dailyDD:2, maxDD:5,  profitTarget:'N/A (no eval)', refund:null, consistency:'Trailing DD (no best-day rule)', commission:'No commission (spread-based)', minDays:-1 },
+        { firm:'FundedNext', name:'Stellar Instant',actype:'instant',size:10000,  price:300,  priceFmt:'$299.99',  split:15, splitFmt:'15%', dailyDD:2, maxDD:5,  profitTarget:'N/A (no eval)', refund:null, consistency:'Trailing DD (no best-day rule)', commission:'No commission (spread-based)', minDays:-1 },
+        { firm:'FundedNext', name:'Stellar Instant',actype:'instant',size:20000,  price:600,  priceFmt:'$599.99',  split:15, splitFmt:'15%', dailyDD:2, maxDD:5,  profitTarget:'N/A (no eval)', refund:null, consistency:'Trailing DD (no best-day rule)', commission:'No commission (spread-based)', minDays:-1 },
+        // The5ers
+        { firm:'The5ers', name:'Hyper Growth (1-Step)', actype:'1-step', size:5000,   price:260, priceFmt:'$260', split:100, splitFmt:'Up to 100%', dailyDD:3, maxDD:6,  profitTarget:'10% per phase', refund:false, consistency:'None (no best-day rule)', commission:'No commission on Standard', minDays:5 },
+        { firm:'The5ers', name:'Hyper Growth (1-Step)', actype:'1-step', size:10000,  price:400, priceFmt:'$400', split:100, splitFmt:'Up to 100%', dailyDD:3, maxDD:6,  profitTarget:'10% per phase', refund:false, consistency:'None (no best-day rule)', commission:'No commission on Standard', minDays:5 },
+        { firm:'The5ers', name:'Hyper Growth (1-Step)', actype:'1-step', size:20000,  price:600, priceFmt:'$600', split:100, splitFmt:'Up to 100%', dailyDD:3, maxDD:6,  profitTarget:'10% per phase', refund:false, consistency:'None (no best-day rule)', commission:'No commission on Standard', minDays:5 },
+        { firm:'The5ers', name:'High Stakes (2-Step)',  actype:'2-step', size:25000,  price:165, priceFmt:'$165', split:100, splitFmt:'Up to 100%', dailyDD:3, maxDD:6,  profitTarget:'10% per phase', refund:true,  consistency:'Min 3 profitable days ≥0.5% (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'The5ers', name:'High Stakes (2-Step)',  actype:'2-step', size:50000,  price:275, priceFmt:'$275', split:100, splitFmt:'Up to 100%', dailyDD:3, maxDD:6,  profitTarget:'10% per phase', refund:true,  consistency:'Min 3 profitable days ≥0.5% (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'The5ers', name:'High Stakes (2-Step)',  actype:'2-step', size:100000, price:495, priceFmt:'$495', split:100, splitFmt:'Up to 100%', dailyDD:3, maxDD:6,  profitTarget:'10% per phase', refund:true,  consistency:'Min 3 profitable days ≥0.5% (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'The5ers', name:'High Stakes (2-Step)',  actype:'2-step', size:200000, price:850, priceFmt:'$850', split:100, splitFmt:'Up to 100%', dailyDD:3, maxDD:6,  profitTarget:'10% per phase', refund:true,  consistency:'Min 3 profitable days ≥0.5% (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'The5ers', name:'Bootcamp (3-Step)',     actype:'3-step', size:10000,  price:110, priceFmt:'$110', split:100, splitFmt:'Up to 100%', dailyDD:3, maxDD:6,  profitTarget:'10% per phase', refund:true,  consistency:'Min 3 profitable days ≥0.5% (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'The5ers', name:'Bootcamp (3-Step)',     actype:'3-step', size:20000,  price:185, priceFmt:'$185', split:100, splitFmt:'Up to 100%', dailyDD:3, maxDD:6,  profitTarget:'10% per phase', refund:true,  consistency:'Min 3 profitable days ≥0.5% (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'The5ers', name:'Bootcamp (3-Step)',     actype:'3-step', size:40000,  price:325, priceFmt:'$325', split:100, splitFmt:'Up to 100%', dailyDD:3, maxDD:6,  profitTarget:'10% per phase', refund:true,  consistency:'Min 3 profitable days ≥0.5% (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'The5ers', name:'Bootcamp (3-Step)',     actype:'3-step', size:60000,  price:450, priceFmt:'$450', split:100, splitFmt:'Up to 100%', dailyDD:3, maxDD:6,  profitTarget:'10% per phase', refund:true,  consistency:'Min 3 profitable days ≥0.5% (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'The5ers', name:'Bootcamp (3-Step)',     actype:'3-step', size:100000, price:650, priceFmt:'$650', split:100, splitFmt:'Up to 100%', dailyDD:3, maxDD:6,  profitTarget:'10% per phase', refund:true,  consistency:'Min 3 profitable days ≥0.5% (funded)', commission:'No commission on Standard', minDays:5 },
+        // E8 Markets
+        { firm:'E8 Markets', name:'E8 One Forex (1-Step)', actype:'1-step', size:5000,   price:40,   priceFmt:'$40.00',   split:80, splitFmt:'Up to 80%', dailyDD:3, maxDD:8,  profitTarget:'6%',  refund:false, consistency:'Best Day Rule (40%)', commission:'$3/lot round turn', minDays:3 },
+        { firm:'E8 Markets', name:'E8 One Forex (1-Step)', actype:'1-step', size:10000,  price:79,   priceFmt:'$79.20',   split:80, splitFmt:'Up to 80%', dailyDD:3, maxDD:8,  profitTarget:'6%',  refund:false, consistency:'Best Day Rule (40%)', commission:'$3/lot round turn', minDays:3 },
+        { firm:'E8 Markets', name:'E8 One Forex (1-Step)', actype:'1-step', size:100000, price:488,  priceFmt:'$488.00',  split:80, splitFmt:'Up to 80%', dailyDD:4, maxDD:8,  profitTarget:'9%',  refund:false, consistency:'Best Day Rule (40%)', commission:'$3/lot round turn', minDays:3 },
+        { firm:'E8 Markets', name:'E8 One Forex (1-Step)', actype:'1-step', size:500000, price:1998, priceFmt:'$1,998.00',split:80, splitFmt:'Up to 80%', dailyDD:4, maxDD:8,  profitTarget:'9%',  refund:false, consistency:'Best Day Rule (40%)', commission:'$3/lot round turn', minDays:3 },
+        { firm:'E8 Markets', name:'E8 One Expert (1-Step)',actype:'1-step', size:500000, price:4460, priceFmt:'$4,460.00',split:80, splitFmt:'Up to 80%', dailyDD:9.2,maxDD:14, profitTarget:'21%', refund:false, consistency:'Best Day Rule (40%)', commission:'$3/lot round turn', minDays:3 },
+        // FXIFY
+        { firm:'FXIFY', name:'One Phase',            actype:'1-step', size:5000,   price:250,  priceFmt:'$250',  split:90, splitFmt:'Up to 90%', dailyDD:5, maxDD:10, profitTarget:'10%', refund:true,  consistency:'None during challenge; 20% rule (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'FXIFY', name:'One Phase',            actype:'1-step', size:10000,  price:349,  priceFmt:'$349',  split:90, splitFmt:'Up to 90%', dailyDD:5, maxDD:10, profitTarget:'10%', refund:true,  consistency:'None during challenge; 20% rule (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'FXIFY', name:'One Phase',            actype:'1-step', size:25000,  price:199,  priceFmt:'$199',  split:90, splitFmt:'Up to 90%', dailyDD:5, maxDD:10, profitTarget:'10%', refund:true,  consistency:'None during challenge; 20% rule (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'FXIFY', name:'One Phase',            actype:'1-step', size:50000,  price:299,  priceFmt:'$299',  split:90, splitFmt:'Up to 90%', dailyDD:5, maxDD:10, profitTarget:'10%', refund:true,  consistency:'None during challenge; 20% rule (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'FXIFY', name:'One Phase',            actype:'1-step', size:100000, price:499,  priceFmt:'$499',  split:90, splitFmt:'Up to 90%', dailyDD:5, maxDD:10, profitTarget:'10%', refund:true,  consistency:'None during challenge; 20% rule (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'FXIFY', name:'One Phase',            actype:'1-step', size:200000, price:799,  priceFmt:'$799',  split:90, splitFmt:'Up to 90%', dailyDD:5, maxDD:10, profitTarget:'10%', refund:true,  consistency:'None during challenge; 20% rule (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'FXIFY', name:'One Phase',            actype:'1-step', size:400000, price:1399, priceFmt:'$1,399',split:90, splitFmt:'Up to 90%', dailyDD:5, maxDD:10, profitTarget:'10%', refund:true,  consistency:'None during challenge; 20% rule (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'FXIFY', name:'Two Phase (Classic)',  actype:'2-step', size:5000,   price:59,   priceFmt:'$59',   split:100,splitFmt:'Up to 100%',dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%', refund:false, consistency:'25% consistency rule (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'FXIFY', name:'Two Phase (Classic)',  actype:'2-step', size:10000,  price:99,   priceFmt:'$99',   split:100,splitFmt:'Up to 100%',dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%', refund:false, consistency:'25% consistency rule (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'FXIFY', name:'Two Phase (Classic)',  actype:'2-step', size:25000,  price:149,  priceFmt:'$149',  split:100,splitFmt:'Up to 100%',dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%', refund:false, consistency:'25% consistency rule (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'FXIFY', name:'Two Phase (Classic)',  actype:'2-step', size:50000,  price:249,  priceFmt:'$249',  split:100,splitFmt:'Up to 100%',dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%', refund:false, consistency:'25% consistency rule (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'FXIFY', name:'Two Phase (Classic)',  actype:'2-step', size:100000, price:399,  priceFmt:'$399',  split:100,splitFmt:'Up to 100%',dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%', refund:false, consistency:'25% consistency rule (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'FXIFY', name:'Three Phase',          actype:'3-step', size:5000,   price:39,   priceFmt:'$39',   split:90, splitFmt:'Up to 90%', dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%, Phase3: 5%', refund:true,  consistency:'30% consistency rule (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'FXIFY', name:'Three Phase',          actype:'3-step', size:25000,  price:149,  priceFmt:'$149',  split:90, splitFmt:'Up to 90%', dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%, Phase3: 5%', refund:true,  consistency:'30% consistency rule (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'FXIFY', name:'Three Phase',          actype:'3-step', size:100000, price:299,  priceFmt:'$299',  split:90, splitFmt:'Up to 90%', dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%, Phase3: 5%', refund:true,  consistency:'30% consistency rule (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'FXIFY', name:'Three Phase',          actype:'3-step', size:400000, price:999,  priceFmt:'$999',  split:90, splitFmt:'Up to 90%', dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%, Phase3: 5%', refund:true,  consistency:'30% consistency rule (funded)', commission:'No commission on Standard', minDays:5 },
+        { firm:'FXIFY', name:'Instant Funding',      actype:'instant',size:50000,  price:0,    priceFmt:'Varies',split:90, splitFmt:'Up to 90%', dailyDD:5, maxDD:10, profitTarget:'N/A (no eval)', refund:null, consistency:'20% consistency rule (always)', commission:'No commission on Standard', minDays:-1 },
+        { firm:'FXIFY', name:'Lightning Challenge',  actype:'2-step', size:5000,   price:0,    priceFmt:'Varies',split:90, splitFmt:'Up to 90%', dailyDD:5, maxDD:10, profitTarget:'8%', refund:false, consistency:'30% consistency rule; 7-day limit', commission:'No commission on Standard', minDays:1 },
+        // WeMasterTrade
+        { firm:'WeMasterTrade', name:'Challenge Package (2-Phase)', actype:'2-step', size:10000,  price:175, priceFmt:'$175',      split:90, splitFmt:'90%', dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%', refund:true,  consistency:'RC Rule: risk per trade <2% of initial balance (Phase2+)', commission:'Varies by broker', minDays:5 },
+        { firm:'WeMasterTrade', name:'Challenge Package (2-Phase)', actype:'2-step', size:25000,  price:0,   priceFmt:'Contact',   split:90, splitFmt:'90%', dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%', refund:true,  consistency:'RC Rule: risk per trade <2% of initial balance (Phase2+)', commission:'Varies by broker', minDays:5 },
+        { firm:'WeMasterTrade', name:'Challenge Package (2-Phase)', actype:'2-step', size:50000,  price:0,   priceFmt:'Contact',   split:90, splitFmt:'90%', dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%', refund:true,  consistency:'RC Rule: risk per trade <2% of initial balance (Phase2+)', commission:'Varies by broker', minDays:5 },
+        { firm:'WeMasterTrade', name:'Challenge Package (2-Phase)', actype:'2-step', size:100000, price:0,   priceFmt:'Contact',   split:90, splitFmt:'90%', dailyDD:5, maxDD:10, profitTarget:'Phase1: 8%, Phase2: 5%', refund:true,  consistency:'RC Rule: risk per trade <2% of initial balance (Phase2+)', commission:'Varies by broker', minDays:5 },
+        { firm:'WeMasterTrade', name:'Instant Package',             actype:'instant',size:10000,  price:0,   priceFmt:'Varies',    split:90, splitFmt:'Up to 90%', dailyDD:5, maxDD:10, profitTarget:'N/A (no eval)', refund:null, consistency:'RC Rule: risk per trade <1% (NoPC)', commission:'Varies by broker', minDays:-1 },
+    ];
+
+    let cmpSortCol = -1;
+    let cmpSortDir = 'asc';
+    let cmpCurrentSize = 'all';
+
+    function setCmpSize(btn) {
+        cmpCurrentSize = btn.getAttribute('data-size');
+        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderCmpTable();
+    }
+
+    function resetCmpFilters() {
+        document.getElementById('cmp-refund').value = '';
+        document.getElementById('cmp-actype').value = '';
+        document.getElementById('cmp-minsplit').value = '';
+        document.getElementById('cmp-maxdaily').value = '';
+        document.getElementById('cmp-maxtotal').value = '';
+        document.getElementById('cmp-consistency').value = '';
+        cmpCurrentSize = 'all';
+        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('.size-btn[data-size="all"]').classList.add('active');
+        cmpSortCol = -1;
+        cmpSortDir = 'asc';
+        document.querySelectorAll('#cmp-table thead th').forEach(th => { th.classList.remove('sorted-asc','sorted-desc'); });
+        renderCmpTable();
+    }
+
+    function sortCmpTable(col) {
+        if (cmpSortCol === col) {
+            cmpSortDir = cmpSortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+            cmpSortCol = col;
+            cmpSortDir = 'asc';
+        }
+        document.querySelectorAll('#cmp-table thead th').forEach((th, i) => {
+            th.classList.remove('sorted-asc','sorted-desc');
+            if (i === col) th.classList.add('sorted-' + cmpSortDir);
+        });
+        renderCmpTable();
+    }
+
+    function parseSortVal(row, col) {
+        // Returns numeric value for sortable columns
+        switch(col) {
+            case 3: return row.size;
+            case 4: return row.price;
+            case 5: return row.split;
+            case 6: return row.dailyDD;
+            case 7: return row.maxDD;
+            case 9: return row.refund === true ? 1 : 0;
+            case 12: return row.minDays;
+            default: return null;
+        }
+    }
+
+    function getTextVal(row, col) {
+        switch(col) {
+            case 0: return row.firm;
+            case 1: return row.name;
+            case 2: return row.actype;
+            case 8: return row.profitTarget;
+            case 10: return row.consistency;
+            case 11: return row.commission;
+            default: return '';
+        }
+    }
+
+    function renderCmpTable() {
+        const refundF = document.getElementById('cmp-refund').value;
+        const actypeF = document.getElementById('cmp-actype').value;
+        const minSplit = parseFloat(document.getElementById('cmp-minsplit').value) || 0;
+        const maxDaily = parseFloat(document.getElementById('cmp-maxdaily').value) || 999;
+        const maxTotal = parseFloat(document.getElementById('cmp-maxtotal').value) || 999;
+        const consistF = document.getElementById('cmp-consistency').value;
+
+        let filtered = CMP_DATA.filter(row => {
+            if (cmpCurrentSize !== 'all' && row.size !== parseInt(cmpCurrentSize)) return false;
+            if (actypeF && row.actype !== actypeF) return false;
+            if (refundF === 'yes' && row.refund !== true) return false;
+            if (refundF === 'no' && row.refund !== false && row.refund !== null) return false;
+            if (row.split < minSplit) return false;
+            if (row.dailyDD > maxDaily) return false;
+            if (row.maxDD > maxTotal) return false;
+            if (consistF === 'none' && row.consistency.toLowerCase() !== 'none') return false;
+            if (consistF === 'has' && row.consistency.toLowerCase() === 'none') return false;
+            return true;
+        });
+
+        if (cmpSortCol >= 0) {
+            filtered.sort((a, b) => {
+                const nA = parseSortVal(a, cmpSortCol);
+                const nB = parseSortVal(b, cmpSortCol);
+                if (nA !== null && nB !== null) {
+                    return cmpSortDir === 'asc' ? nA - nB : nB - nA;
+                }
+                const sA = getTextVal(a, cmpSortCol);
+                const sB = getTextVal(b, cmpSortCol);
+                return cmpSortDir === 'asc' ? sA.localeCompare(sB) : sB.localeCompare(sA);
+            });
+        }
+
+        // Find best price per size group
+        const bestPrice = {};
+        filtered.forEach(r => {
+            if (r.price > 0) {
+                if (!bestPrice[r.size] || r.price < bestPrice[r.size]) bestPrice[r.size] = r.price;
+            }
+        });
+
+        const tbody = document.getElementById('cmp-tbody');
+        tbody.innerHTML = '';
+        if (filtered.length === 0) {
+            document.getElementById('cmp-noresult').classList.remove('hidden');
+            return;
+        }
+        document.getElementById('cmp-noresult').classList.add('hidden');
+
+        const lang = document.body.classList.contains('lang-zh') ? 'zh' : 'en';
+        const yesLabel = lang === 'zh' ? '<span class="badge badge-yes">是</span>' : '<span class="badge badge-yes">Yes</span>';
+        const noLabel  = lang === 'zh' ? '<span class="badge badge-no">否</span>'  : '<span class="badge badge-no">No</span>';
+        const naLabel  = lang === 'zh' ? '<span class="badge badge-partial">N/A</span>' : '<span class="badge badge-partial">N/A</span>';
+
+        filtered.forEach(row => {
+            const isBest = row.price > 0 && bestPrice[row.size] === row.price;
+            const tr = document.createElement('tr');
+            if (isBest) tr.classList.add('cmp-best');
+            const refundCell = row.refund === true ? yesLabel : row.refund === false ? noLabel : naLabel;
+            const minDaysCell = row.minDays >= 0 ? row.minDays : '—';
+            tr.innerHTML = `
+                <td><strong>${row.firm}</strong></td>
+                <td>${row.name}</td>
+                <td>${row.actype}</td>
+                <td>$${row.size.toLocaleString()}</td>
+                <td>${row.priceFmt}</td>
+                <td>${row.splitFmt}</td>
+                <td>${row.dailyDD}%</td>
+                <td>${row.maxDD}%</td>
+                <td>${row.profitTarget}</td>
+                <td>${refundCell}</td>
+                <td>${row.consistency}</td>
+                <td>${row.commission}</td>
+                <td>${minDaysCell}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // Init comparator on tab switch
+    const origSwitchTab = window.switchTab;
+    function switchTab(name, btn) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(name).classList.add('active');
+        btn.classList.add('active');
+        if (name === 'compare') renderCmpTable();
+    }
+
+    // Init placeholders
+    window.addEventListener('load', () => {
+        document.querySelectorAll('[data-ph-en]').forEach(el => {
+            el.placeholder = el.getAttribute('data-ph-en');
+        });
+        document.querySelectorAll('select option[data-en]').forEach(opt => {
+            opt.textContent = opt.getAttribute('data-en');
+        });
+    });
+</script>
+</body>
+</html>
