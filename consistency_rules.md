@@ -94,3 +94,45 @@ This document provides a detailed breakdown of the consistency rules for each pr
 
 ---
 
+
+## BlueBerry Funded
+
+**Rule Name(s):** Consistency Rule
+
+**Applies To:** 1-Step Challenge
+
+**Rule Details:**
+> The 1-Step Challenge has a consistency rule, but the specific details and thresholds are not publicly disclosed on the dashboard. The Prime Challenge (2-Step), 3-Step Challenge, and Instant Funding products do not have a consistency rule.
+
+**Sources:**
+- **Official Source:** [https://blueberrydash-krs2lpq4.manus.space](https://blueberrydash-krs2lpq4.manus.space) (rules-table tab)
+
+---
+
+## Alpha Funded
+
+**Rule Name(s):** Consistency Rule (Optional)
+
+**Applies To:** All programs (Instant Funding, 1-Step, 2-Step, 2-Step PRO, Scaling)
+
+**Rule Details:**
+> Alpha Funded features an optional consistency rule. Traders can choose to have it active or remove it by purchasing an Add-On. The specific thresholds and mechanics of the rule when active are not detailed, but it is designed to encourage consistent trading behavior. The platform also has an inactivity rule, requiring minimum trading activity to keep the account active.
+
+**Sources:**
+- **Official Source:** [https://alphaguide-geewgpg6.manus.space/](https://alphaguide-geewgpg6.manus.space/) (Rules section)
+
+---
+
+## Tiger Funded
+
+**Rule Name(s):** None
+
+**Applies To:** All programs (1 Step, 2 Step, 3 Step, Instant Pro)
+
+**Rule Details:**
+> Tiger Funded explicitly states that they have **NO consistency rules** for any of their account types. This is a major feature of their platform, offering traders maximum flexibility.
+
+**Sources:**
+- **Official Source:** [https://tigerfunded-efhvrcs9.manus.space](https://tigerfunded-efhvrcs9.manus.space)
+
+---

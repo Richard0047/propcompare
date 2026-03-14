@@ -57,3 +57,38 @@ Source: [https://fxify.com,https://fxify.com/programs/one-phase/,https://fxify.c
 
 Source: [https://wemastertrade.com](https://wemastertrade.com)
 
+
+## BlueBerry Funded
+
+| Account Type | Max Daily Drawdown | Max Total Drawdown | Profit Target | Min/Max Trading Days | Consistency Rule | News Trading | Weekend Holding | EA Allowed | Leverage |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Prime Challenge (2-Step) | 4% | 10% | 8% (P1), 6% (P2) | 5 min / Unlimited | No | Yes | Not Stated | Not Stated | 1:30 |
+| 1-Step Challenge | Variable | Variable | Variable | Required / Unlimited | Yes | Yes | Not Stated | Not Stated | 1:30 |
+| 3-Step Challenge | Variable | Variable | Variable | Required / Unlimited | No | Yes | Not Stated | Not Stated | 1:30 |
+| Instant Funding | Variable | Variable | N/A | None / Unlimited | No | Yes | Not Stated | Not Stated | 1:30 |
+
+Source: [https://blueberrydash-krs2lpq4.manus.space](https://blueberrydash-krs2lpq4.manus.space)
+
+## Alpha Funded
+
+| Account Type | Max Daily Drawdown | Max Total Drawdown | Profit Target | Min/Max Trading Days | Consistency Rule | News Trading | Weekend Holding | EA Allowed | Leverage |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Instant Funding | 3% | 5% (trailing) | 10% | 8 min / Unlimited | Optional (Add-on) | Yes (restricted) | Yes | No | Not Stated |
+| Instant Funding PRO | 3% | 5% (trailing) | 8% | 5 min / Unlimited | Optional (Add-on) | Yes (restricted) | Yes | No | Not Stated |
+| 1-Step Program | 5% | 10% | Varies | None / Unlimited | Optional (Add-on) | Yes (restricted) | Yes | No | Not Stated |
+| 2-Step Program | 5% | 10% | Varies | None / Unlimited | Optional (Add-on) | Yes (restricted) | Yes | No | Not Stated |
+| 2-Step PRO | 5% | 10% | Lower targets | None / Unlimited | Optional (Add-on) | Yes (restricted) | Yes | No | Not Stated |
+| Scaling Plan | 5% | 10% | Progressive | None / Unlimited | Optional (Add-on) | Yes (restricted) | Yes | Internal only | Not Stated |
+
+Source: [https://alphaguide-geewgpg6.manus.space](https://alphaguide-geewgpg6.manus.space)
+
+## Tiger Funded
+
+| Account Type | Max Daily Drawdown | Max Total Drawdown | Profit Target | Min/Max Trading Days | Consistency Rule | News Trading | Weekend Holding | EA Allowed | Leverage |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 Step Challenge | 3% | 6% | 10% | 1 min / Unlimited | No | Not Stated | Not Stated | Not Stated | 1:100 |
+| 2 Step Challenge | 5% | 12% | 8% (P1), 5% (P2) | 1 min / Unlimited | No | Not Stated | Not Stated | Not Stated | 1:100 |
+| 3 Step Challenge | 4% | 8% | 6% | 1 min / Unlimited | No | Not Stated | Not Stated | Not Stated | 1:100 |
+| Instant Pro | 3% (trailing) | 3% (trailing) | N/A | 1 min / Unlimited | No | Not Stated | Not Stated | Not Stated | 1:50 |
+
+Source: [https://tigerfunded-efhvrcs9.manus.space](https://tigerfunded-efhvrcs9.manus.space)
