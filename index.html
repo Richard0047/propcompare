@@ -457,6 +457,116 @@
         .cmp-best { background: #dcfce7 !important; }
         .cmp-best td:first-child::after { content: ' ★'; color: #16a34a; font-size: 0.9em; }
         .cmp-no-data { text-align: center; padding: 32px; color: var(--text-muted); font-size: 0.9em; }
+        /* ---- CUSTOM ENTRY PANEL ---- */
+        .custom-entry-panel {
+            background: var(--surface);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 16px;
+        }
+        .custom-entry-panel h3 {
+            font-size: 0.95em;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .custom-entry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 10px 14px;
+            margin-bottom: 14px;
+        }
+        .custom-entry-grid .cmp-filter-group label {
+            font-size: 0.73em;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+        .custom-entry-grid input[type=text],
+        .custom-entry-grid input[type=number],
+        .custom-entry-grid select {
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.875em;
+            width: 100%;
+            background: var(--surface);
+            color: var(--text);
+        }
+        .custom-entry-grid input:focus,
+        .custom-entry-grid select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(37,99,235,0.12);
+        }
+        .custom-entry-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .btn-add-custom {
+            padding: 8px 22px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-add-custom:hover { background: var(--primary-dark); }
+        .btn-reset-custom {
+            padding: 8px 18px;
+            background: transparent;
+            color: var(--accent);
+            border: 1.5px solid var(--accent);
+            border-radius: 6px;
+            font-size: 0.875em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-reset-custom:hover { background: #fff5f5; }
+        .custom-added-list {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .custom-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 20px;
+            padding: 3px 12px 3px 10px;
+            font-size: 0.8em;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .custom-tag button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #93c5fd;
+            font-size: 1em;
+            line-height: 1;
+            padding: 0;
+            transition: color 0.15s;
+        }
+        .custom-tag button:hover { color: var(--accent); }
+        .custom-row td { background: #fefce8 !important; }
+        .custom-row td:first-child { border-left: 3px solid var(--primary); }
+        /* ---- END CUSTOM ENTRY PANEL ---- */
+
         .cmp-legend {
             display: flex;
             gap: 16px;
@@ -1168,6 +1278,84 @@
         </p>
     </div>
 
+    <!-- Custom Platform Entry Panel -->
+    <div class="custom-entry-panel">
+        <h3>➕ <span data-lang="en">Add Custom Platform for Comparison</span><span data-lang="zh">添加自定义平台进行对比</span></h3>
+        <div class="custom-entry-grid">
+            <div class="cmp-filter-group">
+                <label><span data-lang="en">Platform Name</span><span data-lang="zh">平台名称</span></label>
+                <input type="text" id="ci-firm" value="Asia Future Trading" placeholder="e.g. Asia Future Trading">
+            </div>
+            <div class="cmp-filter-group">
+                <label><span data-lang="en">Account Name</span><span data-lang="zh">账户名称</span></label>
+                <input type="text" id="ci-name" placeholder="e.g. Standard Challenge">
+            </div>
+            <div class="cmp-filter-group">
+                <label><span data-lang="en">Account Type</span><span data-lang="zh">账户类型</span></label>
+                <select id="ci-actype">
+                    <option value="1-step">1-Step</option>
+                    <option value="2-step">2-Step</option>
+                    <option value="3-step">3-Step</option>
+                    <option value="instant">Instant / No Eval</option>
+                </select>
+            </div>
+            <div class="cmp-filter-group">
+                <label><span data-lang="en">Account Size ($)</span><span data-lang="zh">账户规模 ($)</span></label>
+                <input type="number" id="ci-size" min="1000" step="1000" placeholder="e.g. 10000">
+            </div>
+            <div class="cmp-filter-group">
+                <label><span data-lang="en">Entry Fee ($)</span><span data-lang="zh">报名费 ($)</span></label>
+                <input type="number" id="ci-price" min="0" step="1" placeholder="e.g. 199">
+            </div>
+            <div class="cmp-filter-group">
+                <label><span data-lang="en">Profit Split (%)</span><span data-lang="zh">分润比例 (%)</span></label>
+                <input type="number" id="ci-split" min="0" max="100" step="1" placeholder="e.g. 80">
+            </div>
+            <div class="cmp-filter-group">
+                <label><span data-lang="en">Daily DD (%)</span><span data-lang="zh">每日回撤 (%)</span></label>
+                <input type="number" id="ci-daily" min="0" max="20" step="0.5" placeholder="e.g. 5">
+            </div>
+            <div class="cmp-filter-group">
+                <label><span data-lang="en">Max Total DD (%)</span><span data-lang="zh">最大总回撤 (%)</span></label>
+                <input type="number" id="ci-total" min="0" max="30" step="0.5" placeholder="e.g. 10">
+            </div>
+            <div class="cmp-filter-group">
+                <label><span data-lang="en">Profit Target</span><span data-lang="zh">利润目标</span></label>
+                <input type="text" id="ci-target" placeholder="e.g. 10%">
+            </div>
+            <div class="cmp-filter-group">
+                <label><span data-lang="en">Fee Refund</span><span data-lang="zh">返还报名费</span></label>
+                <select id="ci-refund">
+                    <option value="yes"><span data-lang="en">Yes</span><span data-lang="zh">是</span></option>
+                    <option value="no"><span data-lang="en">No</span><span data-lang="zh">否</span></option>
+                    <option value="na">N/A</option>
+                </select>
+            </div>
+            <div class="cmp-filter-group">
+                <label><span data-lang="en">Consistency Rule</span><span data-lang="zh">一致性规则</span></label>
+                <input type="text" id="ci-consistency" placeholder="e.g. None / 30% rule">
+            </div>
+            <div class="cmp-filter-group">
+                <label><span data-lang="en">Commission / Spread</span><span data-lang="zh">佣金 / 手续费</span></label>
+                <input type="text" id="ci-commission" placeholder="e.g. $3/lot">
+            </div>
+            <div class="cmp-filter-group">
+                <label><span data-lang="en">Min Trading Days</span><span data-lang="zh">最少交易天数</span></label>
+                <input type="number" id="ci-mindays" min="0" step="1" placeholder="e.g. 5">
+            </div>
+        </div>
+        <div class="custom-entry-actions">
+            <button class="btn-add-custom" onclick="addCustomEntry()">
+                <span data-lang="en">+ Add to Comparison</span><span data-lang="zh">+ 添加到对比</span>
+            </button>
+            <button class="btn-reset-custom" onclick="resetAllCustom()">
+                <span data-lang="en">✕ Remove All Custom</span><span data-lang="zh">✕ 移除所有自定义</span>
+            </button>
+            <span id="ci-error" style="color:#e53e3e;font-size:0.82em;display:none;"><span data-lang="en">Please fill in Platform Name, Account Name, Size, Price and Profit Split.</span><span data-lang="zh">请填写平台名称、账户名称、规模、报名费和分润比例。</span></span>
+        </div>
+        <div class="custom-added-list" id="custom-tags-list"></div>
+    </div>
+
     <!-- Account Size Selector -->
     <div class="size-selector-bar">
         <span class="size-label"><span data-lang="en">Account Size:</span><span data-lang="zh">账户规模：</span></span>
@@ -1261,6 +1449,10 @@
             <span data-lang="zh">★ 同规模最优（最低报名费或最高分润）</span>
         </span>
         <span style="color:#94a3b8"><span data-lang="en">— = Data not available or not applicable</span><span data-lang="zh">— = 数据不适用或暂无</span></span>
+        <span><span class="legend-dot" style="background:#fefce8;border:1px solid #fde68a"></span>
+            <span data-lang="en">Custom = Manually entered platform data</span>
+            <span data-lang="zh">Custom = 手动输入的自定义平台数据</span>
+        </span>
     </div>
 </div>
 
@@ -1514,6 +1706,90 @@
     let cmpSortDir = 'asc';
     let cmpCurrentSize = 'all';
 
+    // ---- Custom entries store ----
+    let customEntries = [];  // array of entry objects
+    let customIdCounter = 0;
+
+    function addCustomEntry() {
+        const firm    = document.getElementById('ci-firm').value.trim();
+        const name    = document.getElementById('ci-name').value.trim();
+        const actype  = document.getElementById('ci-actype').value;
+        const size    = parseInt(document.getElementById('ci-size').value) || 0;
+        const price   = parseFloat(document.getElementById('ci-price').value);
+        const split   = parseFloat(document.getElementById('ci-split').value);
+        const daily   = parseFloat(document.getElementById('ci-daily').value) || 5;
+        const total   = parseFloat(document.getElementById('ci-total').value) || 10;
+        const target  = document.getElementById('ci-target').value.trim() || '—';
+        const refundV = document.getElementById('ci-refund').value;
+        const consist = document.getElementById('ci-consistency').value.trim() || 'None';
+        const comm    = document.getElementById('ci-commission').value.trim() || '—';
+        const minDays = parseInt(document.getElementById('ci-mindays').value) || 0;
+        const errEl   = document.getElementById('ci-error');
+
+        if (!firm || !name || !size || isNaN(price) || isNaN(split)) {
+            errEl.style.display = 'inline';
+            setTimeout(() => { errEl.style.display = 'none'; }, 3000);
+            return;
+        }
+        errEl.style.display = 'none';
+
+        const refundBool = refundV === 'yes' ? true : refundV === 'no' ? false : null;
+        const priceFmt = price === 0 ? 'FREE' : '$' + price.toLocaleString();
+        const splitFmt = split + '%';
+        const id = ++customIdCounter;
+
+        const entry = {
+            _customId: id,
+            firm, name, actype, size,
+            price, priceFmt,
+            split, splitFmt,
+            dailyDD: daily, maxDD: total,
+            profitTarget: target,
+            refund: refundBool,
+            consistency: consist,
+            commission: comm,
+            minDays,
+            _isCustom: true
+        };
+        customEntries.push(entry);
+
+        // Render tag
+        const tagList = document.getElementById('custom-tags-list');
+        const tag = document.createElement('span');
+        tag.className = 'custom-tag';
+        tag.id = 'ctag-' + id;
+        tag.innerHTML = `${firm} — ${name} ($${size.toLocaleString()}) <button onclick="removeCustomEntry(${id})" title="Remove">✕</button>`;
+        tagList.appendChild(tag);
+
+        // Clear fields (keep firm name)
+        document.getElementById('ci-name').value = '';
+        document.getElementById('ci-size').value = '';
+        document.getElementById('ci-price').value = '';
+        document.getElementById('ci-split').value = '';
+        document.getElementById('ci-daily').value = '';
+        document.getElementById('ci-total').value = '';
+        document.getElementById('ci-target').value = '';
+        document.getElementById('ci-consistency').value = '';
+        document.getElementById('ci-commission').value = '';
+        document.getElementById('ci-mindays').value = '';
+
+        renderCmpTable();
+    }
+
+    function removeCustomEntry(id) {
+        customEntries = customEntries.filter(e => e._customId !== id);
+        const tag = document.getElementById('ctag-' + id);
+        if (tag) tag.remove();
+        renderCmpTable();
+    }
+
+    function resetAllCustom() {
+        customEntries = [];
+        customIdCounter = 0;
+        document.getElementById('custom-tags-list').innerHTML = '';
+        renderCmpTable();
+    }
+
     function setCmpSize(btn) {
         cmpCurrentSize = btn.getAttribute('data-size');
         document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
@@ -1585,7 +1861,10 @@
         const maxTotal = parseFloat(document.getElementById('cmp-maxtotal').value) || 999;
         const consistF = document.getElementById('cmp-consistency').value;
 
-        let filtered = CMP_DATA.filter(row => {
+        // Merge CMP_DATA with customEntries
+        const allData = [...CMP_DATA, ...customEntries];
+
+        let filtered = allData.filter(row => {
             if (cmpCurrentSize !== 'all' && row.size !== parseInt(cmpCurrentSize)) return false;
             if (actypeF && row.actype !== actypeF) return false;
             if (refundF === 'yes' && row.refund !== true) return false;
@@ -1636,10 +1915,14 @@
             const isBest = row.price > 0 && bestPrice[row.size] === row.price;
             const tr = document.createElement('tr');
             if (isBest) tr.classList.add('cmp-best');
+            if (row._isCustom) tr.classList.add('custom-row');
             const refundCell = row.refund === true ? yesLabel : row.refund === false ? noLabel : naLabel;
             const minDaysCell = row.minDays >= 0 ? row.minDays : '—';
+            const firmLabel = row._isCustom
+                ? `<strong>${row.firm}</strong> <span style="font-size:0.75em;background:#dbeafe;color:#1d4ed8;border-radius:4px;padding:1px 6px;font-weight:600;">Custom</span>`
+                : `<strong>${row.firm}</strong>`;
             tr.innerHTML = `
-                <td><strong>${row.firm}</strong></td>
+                <td>${firmLabel}</td>
                 <td>${row.name}</td>
                 <td>${row.actype}</td>
                 <td>$${row.size.toLocaleString()}</td>
