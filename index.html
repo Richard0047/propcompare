@@ -632,6 +632,9 @@
     <button class="tab-btn" onclick="switchTab('compare', this)">
         🔍 <span data-lang="en">Account Comparator</span><span data-lang="zh">账户横向对比</span>
     </button>
+    <button class="tab-btn" onclick="switchTab('payout', this)">
+        💸 <span data-lang="en">Payout Rules</span><span data-lang="zh">出金规则</span>
+    </button>
 </div>
 
 <!-- ==================== PRICING TAB ==================== -->
@@ -1460,6 +1463,352 @@
         </span>
     </div>
 </div>
+
+
+<!-- ==================== PAYOUT RULES TAB ==================== -->
+<div id="payout" class="tab-content">
+    <div class="stats-bar">
+        <div class="stat-card"><div class="val">9</div><div class="lbl"><span data-lang="en">Platforms Covered</span><span data-lang="zh">覆盖平台数</span></div></div>
+        <div class="stat-card"><div class="val">Daily</div><div class="lbl"><span data-lang="en">Fastest Payout</span><span data-lang="zh">最快出金周期</span></div></div>
+        <div class="stat-card"><div class="val">100%</div><div class="lbl"><span data-lang="en">Max Profit Split</span><span data-lang="zh">最高分润比例</span></div></div>
+        <div class="stat-card"><div class="val">5 Days</div><div class="lbl"><span data-lang="en">Fastest First Payout</span><span data-lang="zh">最快首次出金</span></div></div>
+    </div>
+
+    <h2 style="margin-bottom:16px;">💸 <span data-lang="en">Quick Reference — Payout Rules at a Glance</span><span data-lang="zh">快速参考 — 出金规则概览</span></h2>
+
+    <div class="table-wrapper" style="margin-bottom:28px;">
+        <table>
+            <thead>
+                <tr>
+                    <th><span data-lang="en">Platform</span><span data-lang="zh">平台</span></th>
+                    <th><span data-lang="en">First Payout Wait</span><span data-lang="zh">首次出金等待</span></th>
+                    <th><span data-lang="en">Payout Frequency</span><span data-lang="zh">出金周期</span></th>
+                    <th><span data-lang="en">On-Demand</span><span data-lang="zh">按需出金</span></th>
+                    <th><span data-lang="en">Profit Split</span><span data-lang="zh">分润比例</span></th>
+                    <th><span data-lang="en">Fee Refund</span><span data-lang="zh">返还报名费</span></th>
+                    <th><span data-lang="en">Payment Methods</span><span data-lang="zh">出金方式</span></th>
+                    <th><span data-lang="en">Processing Time</span><span data-lang="zh">处理时间</span></th>
+                    <th><span data-lang="en">Withdrawal Fee</span><span data-lang="zh">出金手续费</span></th>
+                    <th><span data-lang="en">Official Link</span><span data-lang="zh">官方链接</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>FTMO</strong></td>
+                    <td>14 <span data-lang="en">days</span><span data-lang="zh">天</span></td>
+                    <td><span data-lang="en">Bi-weekly (custom date)</span><span data-lang="zh">每两周（可自定义日期）</span></td>
+                    <td><span class="badge badge-no" data-lang="en">No</span><span class="badge badge-no" data-lang="zh">否</span></td>
+                    <td>80% → 90%</td>
+                    <td><span class="badge badge-yes" data-lang="en">Yes (1st payout)</span><span class="badge badge-yes" data-lang="zh">是（首次出金时）</span></td>
+                    <td>Bank, Crypto, Skrill</td>
+                    <td>1–2 <span data-lang="en">biz days</span><span data-lang="zh">个工作日</span></td>
+                    <td><span data-lang="en">Free</span><span data-lang="zh">免费</span></td>
+                    <td><a href="https://ftmo.com/en/faq/" target="_blank" class="source-link">FAQ</a></td>
+                </tr>
+                <tr>
+                    <td><strong>FundedNext</strong></td>
+                    <td>5–21 <span data-lang="en">days (by plan)</span><span data-lang="zh">天（按计划）</span></td>
+                    <td><span data-lang="en">Bi-weekly / 5-day (1-Step)</span><span data-lang="zh">每两周 / 5 日（1 阶段）</span></td>
+                    <td><span class="badge badge-no" data-lang="en">No</span><span class="badge badge-no" data-lang="zh">否</span></td>
+                    <td>80% → 95%</td>
+                    <td><span class="badge badge-partial" data-lang="en">Partial (3rd payout)</span><span class="badge badge-partial" data-lang="zh">部分（第 3 次出金）</span></td>
+                    <td>Crypto, Rise Pay</td>
+                    <td><span data-lang="en">Same day (crypto)</span><span data-lang="zh">当日（加密货币）</span></td>
+                    <td><span data-lang="en">Free</span><span data-lang="zh">免费</span></td>
+                    <td><a href="https://fundednext.com/faq" target="_blank" class="source-link">FAQ</a></td>
+                </tr>
+                <tr>
+                    <td><strong>The5ers</strong></td>
+                    <td>14 <span data-lang="en">days</span><span data-lang="zh">天</span></td>
+                    <td><span data-lang="en">Bi-weekly</span><span data-lang="zh">每两周</span></td>
+                    <td><span class="badge badge-no" data-lang="en">No</span><span class="badge badge-no" data-lang="zh">否</span></td>
+                    <td>50% → 100%</td>
+                    <td><span class="badge badge-no" data-lang="en">No</span><span class="badge badge-no" data-lang="zh">否</span></td>
+                    <td>Rise Pay, Crypto</td>
+                    <td>1–3 <span data-lang="en">biz days</span><span data-lang="zh">个工作日</span></td>
+                    <td><span data-lang="en">Bank 3%, Crypto 2%</span><span data-lang="zh">银行 3%，加密 2%</span></td>
+                    <td><a href="https://the5ers.com/faq/" target="_blank" class="source-link">FAQ</a></td>
+                </tr>
+                <tr>
+                    <td><strong>E8 Markets</strong></td>
+                    <td>8 <span data-lang="en">days</span><span data-lang="zh">天</span></td>
+                    <td><span data-lang="en">On-demand (min 3 days apart)</span><span data-lang="zh">按需（最短间隔 3 天）</span></td>
+                    <td><span class="badge badge-yes" data-lang="en">Yes</span><span class="badge badge-yes" data-lang="zh">是</span></td>
+                    <td>80% → 100%</td>
+                    <td><span class="badge badge-no" data-lang="en">No</span><span class="badge badge-no" data-lang="zh">否</span></td>
+                    <td>Rise Pay, Bank Transfer</td>
+                    <td><span data-lang="en">Avg 10 hours</span><span data-lang="zh">平均 10 小时</span></td>
+                    <td><span data-lang="en">Free</span><span data-lang="zh">免费</span></td>
+                    <td><a href="https://e8markets.com/faq" target="_blank" class="source-link">FAQ</a></td>
+                </tr>
+                <tr>
+                    <td><strong>FXIFY</strong></td>
+                    <td><span data-lang="en">Instant (1st payout on-demand)</span><span data-lang="zh">即时（首笔按需）</span></td>
+                    <td><span data-lang="en">Bi-weekly (after 1st)</span><span data-lang="zh">每两周（首次后）</span></td>
+                    <td><span class="badge badge-partial" data-lang="en">First Only</span><span class="badge badge-partial" data-lang="zh">仅首次</span></td>
+                    <td>80% → 100%</td>
+                    <td><span class="badge badge-yes" data-lang="en">Yes (1st payout)</span><span class="badge badge-yes" data-lang="zh">是（首次出金时）</span></td>
+                    <td>Rise Pay, Crypto</td>
+                    <td>1–2 <span data-lang="en">biz days</span><span data-lang="zh">个工作日</span></td>
+                    <td><span data-lang="en">Free</span><span data-lang="zh">免费</span></td>
+                    <td><a href="https://fxify.com/faqs/" target="_blank" class="source-link">FAQ</a></td>
+                </tr>
+                <tr>
+                    <td><strong>WeMasterTrade</strong></td>
+                    <td><span data-lang="en">1 day (same day)</span><span data-lang="zh">1 天（当日）</span></td>
+                    <td><span data-lang="en">Daily</span><span data-lang="zh">每日</span></td>
+                    <td><span class="badge badge-yes" data-lang="en">Yes</span><span class="badge badge-yes" data-lang="zh">是</span></td>
+                    <td>50% → 90%</td>
+                    <td><span class="badge badge-no" data-lang="en">No (Instant)</span><span class="badge badge-no" data-lang="zh">否（即时账户）</span></td>
+                    <td>Bank, Crypto, Debit Card</td>
+                    <td><span data-lang="en">Avg 48 hours</span><span data-lang="zh">平均 48 小时</span></td>
+                    <td><span data-lang="en">Free</span><span data-lang="zh">免费</span></td>
+                    <td><a href="https://wemastertrade.com" target="_blank" class="source-link">Website</a></td>
+                </tr>
+                <tr>
+                    <td><strong>BlueBerry Funded</strong></td>
+                    <td>14 <span data-lang="en">days</span><span data-lang="zh">天</span></td>
+                    <td><span data-lang="en">Bi-weekly (add-ons: 7-day / on-demand)</span><span data-lang="zh">每两周（插件可缩短至 7 天 / 按需）</span></td>
+                    <td><span class="badge badge-partial" data-lang="en">Add-on Only</span><span class="badge badge-partial" data-lang="zh">需购买插件</span></td>
+                    <td>80% → 90%</td>
+                    <td><span class="badge badge-no" data-lang="en">No</span><span class="badge badge-no" data-lang="zh">否</span></td>
+                    <td>Crypto, Rise Pay</td>
+                    <td>1–2 <span data-lang="en">biz days</span><span data-lang="zh">个工作日</span></td>
+                    <td><span data-lang="en">Free</span><span data-lang="zh">免费</span></td>
+                    <td><a href="https://blueberrydash-krs2lpq4.manus.space" target="_blank" class="source-link">Website</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Alpha Funded</strong></td>
+                    <td>7–14 <span data-lang="en">days (by plan)</span><span data-lang="zh">天（按计划）</span></td>
+                    <td><span data-lang="en">Weekly (Advanced) / Bi-weekly (Standard)</span><span data-lang="zh">每周（高级）/ 每两周（标准）</span></td>
+                    <td><span class="badge badge-no" data-lang="en">No</span><span class="badge badge-no" data-lang="zh">否</span></td>
+                    <td>70% → 100%</td>
+                    <td><span class="badge badge-partial" data-lang="en">Partial (by plan)</span><span class="badge badge-partial" data-lang="zh">部分（按计划）</span></td>
+                    <td>Rise Pay, Crypto</td>
+                    <td><span data-lang="en">Within 48 hours</span><span data-lang="zh">48 小时内</span></td>
+                    <td><span data-lang="en">Free</span><span data-lang="zh">免费</span></td>
+                    <td><a href="https://alphaguide-geewgpg6.manus.space" target="_blank" class="source-link">Website</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Tiger Funded</strong></td>
+                    <td>14 <span data-lang="en">days</span><span data-lang="zh">天</span></td>
+                    <td><span data-lang="en">Bi-weekly</span><span data-lang="zh">每两周</span></td>
+                    <td><span class="badge badge-no" data-lang="en">No</span><span class="badge badge-no" data-lang="zh">否</span></td>
+                    <td>80% → 95%</td>
+                    <td><span class="badge badge-yes" data-lang="en">Yes (200% refund)</span><span class="badge badge-yes" data-lang="zh">是（200% 退还）</span></td>
+                    <td>Rise Pay, Crypto</td>
+                    <td>1–3 <span data-lang="en">biz days</span><span data-lang="zh">个工作日</span></td>
+                    <td><span data-lang="en">Free</span><span data-lang="zh">免费</span></td>
+                    <td><a href="https://tigerfunded-efhvrcs9.manus.space" target="_blank" class="source-link">Website</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Detailed Cards -->
+    <h2 style="margin-bottom:16px;"><span data-lang="en">Detailed Payout Rules by Platform</span><span data-lang="zh">各平台出金规则详解</span></h2>
+    <div class="consistency-grid">
+
+        <!-- FTMO -->
+        <div class="firm-card">
+            <div class="firm-card-header">
+                <h3>FTMO</h3>
+                <span class="firm-badge">Bi-weekly</span>
+                <a href="https://ftmo.com/en/faq/" target="_blank" class="source-link" style="margin-left:8px;font-size:0.8em;"><span data-lang="en">Official FAQ</span><span data-lang="zh">官方 FAQ</span></a>
+            </div>
+            <div class="firm-card-body">
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">First Payout</span><span data-lang="zh">首次出金</span></div><div class="rule-value"><span data-lang="en">14 days after first trade</span><span data-lang="zh">首笔交易后 14 天</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Frequency</span><span data-lang="zh">出金周期</span></div><div class="rule-value"><span data-lang="en">Bi-weekly; traders can set a custom withdrawal date</span><span data-lang="zh">每两周一次；交易者可自定义出金日期</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Profit Split</span><span data-lang="zh">分润比例</span></div><div class="rule-value"><span data-lang="en">80% initial → up to 90% via Scaling Plan (every 3 months, 10% profit + 2 payouts)</span><span data-lang="zh">初始 80%，通过扩展计划（每 3 个月盈利 10% + 2 次出金）可升至 90%</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Fee Refund</span><span data-lang="zh">返还报名费</span></div><div class="rule-value"><span data-lang="en">100% refunded with the first payout (both 1-Step and 2-Step)</span><span data-lang="zh">首次出金时 100% 返还（1 阶段和 2 阶段均适用）</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Payment Methods</span><span data-lang="zh">出金方式</span></div><div class="rule-value">Bank Transfer, Crypto, Skrill</div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Processing</span><span data-lang="zh">处理时间</span></div><div class="rule-value"><span data-lang="en">1–2 business days</span><span data-lang="zh">1–2 个工作日</span></div></div>
+                <div class="rule-detail-box">
+                    <strong><span data-lang="en">⚠️ Key Conditions</span><span data-lang="zh">⚠️ 关键条件</span></strong><br>
+                    <span data-lang="en">• Best Day Rule: single best profit day must not exceed 50% of total profits before withdrawal is eligible.<br>• 1-Step accounts must fully close all positions each cycle (no profit carry-over).<br>• 2-Step accounts may retain a buffer to widen the drawdown cushion.</span>
+                    <span data-lang="zh">• 最佳交易日规则：单日最高盈利不得超过总盈利的 50%，否则需继续交易直至达标才可出金。<br>• 1 阶段账户每期必须结清所有仓位（不允许留存利润）。<br>• 2 阶段账户可保留缓冲区以扩大回撤空间。</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- FundedNext -->
+        <div class="firm-card">
+            <div class="firm-card-header">
+                <h3>FundedNext</h3>
+                <span class="firm-badge">5–21 Days</span>
+                <a href="https://fundednext.com/faq" target="_blank" class="source-link" style="margin-left:8px;font-size:0.8em;"><span data-lang="en">Official FAQ</span><span data-lang="zh">官方 FAQ</span></a>
+            </div>
+            <div class="firm-card-body">
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">First Payout</span><span data-lang="zh">首次出金</span></div><div class="rule-value"><span data-lang="en">Stellar 1-Step: 5 business days; Stellar 2-Step & Lite: 21 days</span><span data-lang="zh">Stellar 1-Step：5 个工作日；Stellar 2-Step 及 Lite：21 天</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Frequency</span><span data-lang="zh">出金周期</span></div><div class="rule-value"><span data-lang="en">1-Step: every 5 biz days; 2-Step & Lite: every 14 days</span><span data-lang="zh">1-Step：每 5 个工作日；2-Step 及 Lite：每 14 天</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Profit Split</span><span data-lang="zh">分润比例</span></div><div class="rule-value"><span data-lang="en">80% → 95% (Scaling Plan); Challenge phase earns 15% of simulated profits as bonus</span><span data-lang="zh">80% → 95%（扩展计划）；挑战阶段可获得模拟利润的 15% 作为奖励</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Fee Refund</span><span data-lang="zh">返还报名费</span></div><div class="rule-value"><span data-lang="en">2-Step: 1st payout; 1-Step & Lite: 3rd payout</span><span data-lang="zh">2-Step：首次出金时返还；1-Step 及 Lite：第 3 次出金时返还</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Payment Methods</span><span data-lang="zh">出金方式</span></div><div class="rule-value">Crypto, Rise Pay</div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Processing</span><span data-lang="zh">处理时间</span></div><div class="rule-value"><span data-lang="en">Same day for crypto; $1,000 delay compensation if late</span><span data-lang="zh">加密货币当日到账；延迟可获 $1,000 补偿</span></div></div>
+                <div class="rule-detail-box">
+                    <strong><span data-lang="en">⚠️ Key Conditions</span><span data-lang="zh">⚠️ 关键条件</span></strong><br>
+                    <span data-lang="en">• Live Account Program: 80% of simulated profit is "eligible profit", split as 50% cash payout + 25% live deposit (cap $50K) + 25% reserve.<br>• Reserve auto-refills account balance after withdrawal (2:1 match model).<br>• No consistency rule on CFD accounts.</span>
+                    <span data-lang="zh">• 实盘账户计划：模拟利润的 80% 为"合格利润"，拆分为 50% 现金出金 + 25% 实盘存款（上限 $50K）+ 25% 储备金。<br>• 储备金在出金后自动补充账户余额（2:1 匹配模式）。<br>• CFD 账户无一致性规则限制。</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- The5ers -->
+        <div class="firm-card">
+            <div class="firm-card-header">
+                <h3>The5ers</h3>
+                <span class="firm-badge">Bi-weekly</span>
+                <a href="https://the5ers.com/faq/" target="_blank" class="source-link" style="margin-left:8px;font-size:0.8em;"><span data-lang="en">Official FAQ</span><span data-lang="zh">官方 FAQ</span></a>
+            </div>
+            <div class="firm-card-body">
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">First Payout</span><span data-lang="zh">首次出金</span></div><div class="rule-value"><span data-lang="en">14 days after funded account activation</span><span data-lang="zh">资金账户激活后 14 天</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Frequency</span><span data-lang="zh">出金周期</span></div><div class="rule-value"><span data-lang="en">Every 14 days</span><span data-lang="zh">每 14 天一次</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Profit Split</span><span data-lang="zh">分润比例</span></div><div class="rule-value"><span data-lang="en">Hyper Growth: 50% → 75% → 80% → 100% (as account doubles); High Stakes: 80% fixed</span><span data-lang="zh">Hyper Growth：50% → 75% → 80% → 100%（随账户翻倍递增）；High Stakes：固定 80%</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Fee Refund</span><span data-lang="zh">返还报名费</span></div><div class="rule-value"><span data-lang="en">No refund (Hyper Growth is instant-funded, no challenge fee)</span><span data-lang="zh">无返还（Hyper Growth 为即时资金账户，无挑战费）</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Payment Methods</span><span data-lang="zh">出金方式</span></div><div class="rule-value">Rise Pay, Crypto</div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Withdrawal Fee</span><span data-lang="zh">出金手续费</span></div><div class="rule-value"><span data-lang="en">Bank Transfer: 3%; Crypto & Rise Pay: 2%</span><span data-lang="zh">银行转账：3%；加密货币及 Rise Pay：2%</span></div></div>
+                <div class="rule-detail-box">
+                    <strong><span data-lang="en">⚠️ Key Conditions</span><span data-lang="zh">⚠️ 关键条件</span></strong><br>
+                    <span data-lang="en">• Hyper Growth: withdrawal does NOT reduce progress toward the next doubling milestone — unique industry feature.<br>• High Stakes: requires at least 3 profitable trading days (≥0.5% of initial balance each) per payout cycle.<br>• Scaling: account doubles when 10% profit target is reached; split increases at each level.</span>
+                    <span data-lang="zh">• Hyper Growth：出金金额不影响账户翻倍进度，是行业内独特设计。<br>• High Stakes：每次出金前需满足至少 3 个盈利交易日（每日盈利 ≥ 初始余额的 0.5%）。<br>• 扩展机制：达到 10% 利润目标后账户翻倍，分润比例随等级递增。</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- E8 Markets -->
+        <div class="firm-card">
+            <div class="firm-card-header">
+                <h3>E8 Markets</h3>
+                <span class="firm-badge">On-Demand</span>
+                <a href="https://e8markets.com/faq" target="_blank" class="source-link" style="margin-left:8px;font-size:0.8em;"><span data-lang="en">Official FAQ</span><span data-lang="zh">官方 FAQ</span></a>
+            </div>
+            <div class="firm-card-body">
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">First Payout</span><span data-lang="zh">首次出金</span></div><div class="rule-value"><span data-lang="en">8 days after funded account activation</span><span data-lang="zh">资金账户激活后 8 天</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Frequency</span><span data-lang="zh">出金周期</span></div><div class="rule-value"><span data-lang="en">On-demand; minimum 3 days between payouts</span><span data-lang="zh">按需出金；两次出金最短间隔 3 天</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Profit Split</span><span data-lang="zh">分润比例</span></div><div class="rule-value"><span data-lang="en">80% → 100% (Scaling: 25% account increase after 10% profit in 3 months + 1 payout)</span><span data-lang="zh">80% → 100%（扩展：3 个月内盈利 10% 且完成 1 次出金后账户增加 25%）</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Fee Refund</span><span data-lang="zh">返还报名费</span></div><div class="rule-value"><span data-lang="en">No (policy moved away from refunds)</span><span data-lang="zh">否（政策已取消返费）</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Payment Methods</span><span data-lang="zh">出金方式</span></div><div class="rule-value">Rise Pay, Bank Transfer</div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Processing</span><span data-lang="zh">处理时间</span></div><div class="rule-value"><span data-lang="en">Average 10 hours</span><span data-lang="zh">平均 10 小时</span></div></div>
+                <div class="rule-detail-box">
+                    <strong><span data-lang="en">⚠️ Key Conditions</span><span data-lang="zh">⚠️ 关键条件</span></strong><br>
+                    <span data-lang="en">• Drawdown Reset: each successful payout resets the trading benchmark; daily/total drawdown recalibrated to new balance.<br>• Best Day Rule: E8 One/Pro 40%; E8 Signature 35% — applies at funded stage for withdrawal eligibility.<br>• Minimum profitable days required before each payout (varies by account type).</span>
+                    <span data-lang="zh">• 回撤重置：每次成功出金后交易基准重置，每日/总回撤根据新余额重新校准。<br>• 最佳交易日规则：E8 One/Pro 为 40%；E8 Signature 为 35%，适用于资金阶段出金资格审核。<br>• 每次出金前需满足最低盈利天数要求（因账户类型而异）。</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- FXIFY -->
+        <div class="firm-card">
+            <div class="firm-card-header">
+                <h3>FXIFY</h3>
+                <span class="firm-badge">On-Demand (1st)</span>
+                <a href="https://fxify.com/faqs/" target="_blank" class="source-link" style="margin-left:8px;font-size:0.8em;"><span data-lang="en">Official FAQ</span><span data-lang="zh">官方 FAQ</span></a>
+            </div>
+            <div class="firm-card-body">
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">First Payout</span><span data-lang="zh">首次出金</span></div><div class="rule-value"><span data-lang="en">Instant on-demand after closing any profitable trade (no minimum amount)</span><span data-lang="zh">关闭任意盈利交易后即可按需申请（无最低金额限制）</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Frequency</span><span data-lang="zh">出金周期</span></div><div class="rule-value"><span data-lang="en">Bi-weekly after the first payout; Sim Live: daily</span><span data-lang="zh">首次出金后每两周一次；Sim Live 账户：每日可出金</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Profit Split</span><span data-lang="zh">分润比例</span></div><div class="rule-value"><span data-lang="en">80% base → 90% → 100% via add-ons (10% fee surcharge per tier)</span><span data-lang="zh">基础 80% → 90% → 100%（每档需支付 10% 报名费加成）</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Fee Refund</span><span data-lang="zh">返还报名费</span></div><div class="rule-value"><span data-lang="en">Yes, with first payout</span><span data-lang="zh">是，首次出金时返还</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Payment Methods</span><span data-lang="zh">出金方式</span></div><div class="rule-value">Rise Pay, Crypto</div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Processing</span><span data-lang="zh">处理时间</span></div><div class="rule-value">1–2 <span data-lang="en">business days</span><span data-lang="zh">个工作日</span></div></div>
+                <div class="rule-detail-box">
+                    <strong><span data-lang="en">⚠️ Key Conditions</span><span data-lang="zh">⚠️ 关键条件</span></strong><br>
+                    <span data-lang="en">• Consistency Rule (applies to withdrawal eligibility):<br>  — Standard: 30% (eval + funded); Expert: 40% (funded only); Sim Live: 20%<br>• Add-ons can remove daily drawdown limit (Expert only) or increase profit split.<br>• Futures accounts have a buffer zone (e.g. $1,500 on $50K) — must exceed buffer before withdrawing.</span>
+                    <span data-lang="zh">• 一致性规则（适用于出金资格）：<br>  — Standard：30%（评估 + 资金阶段）；Expert：40%（仅资金阶段）；Sim Live：20%<br>• 插件可移除每日回撤限制（仅 Expert）或提升分润比例。<br>• 期货账户设有缓冲区（如 $50K 账户需超过 $1,500 缓冲才可出金）。</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- WeMasterTrade -->
+        <div class="firm-card">
+            <div class="firm-card-header">
+                <h3>WeMasterTrade</h3>
+                <span class="firm-badge">Daily</span>
+                <a href="https://wemastertrade.com" target="_blank" class="source-link" style="margin-left:8px;font-size:0.8em;"><span data-lang="en">Website</span><span data-lang="zh">官网</span></a>
+            </div>
+            <div class="firm-card-body">
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">First Payout</span><span data-lang="zh">首次出金</span></div><div class="rule-value"><span data-lang="en">Same day (after meeting 6%–10% profit requirement)</span><span data-lang="zh">当日（满足 6%–10% 盈利要求后）</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Frequency</span><span data-lang="zh">出金周期</span></div><div class="rule-value"><span data-lang="en">Daily; average 48-hour processing</span><span data-lang="zh">每日可申请；平均 48 小时处理</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Profit Split</span><span data-lang="zh">分润比例</span></div><div class="rule-value"><span data-lang="en">1st payout: 50% → 2nd: 75% → 3rd+: 90%</span><span data-lang="zh">第 1 次：50% → 第 2 次：75% → 第 3 次及以后：90%</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Fee Refund</span><span data-lang="zh">返还报名费</span></div><div class="rule-value"><span data-lang="en">No (instant-funded model)</span><span data-lang="zh">否（即时资金模式）</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Payment Methods</span><span data-lang="zh">出金方式</span></div><div class="rule-value">Bank Transfer, Crypto, Debit Card</div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Min Profit to Withdraw</span><span data-lang="zh">最低出金盈利要求</span></div><div class="rule-value"><span data-lang="en">6%–10% of account balance (varies by plan)</span><span data-lang="zh">账户余额的 6%–10%（因计划而异）</span></div></div>
+                <div class="rule-detail-box">
+                    <strong><span data-lang="en">⚠️ Key Conditions</span><span data-lang="zh">⚠️ 关键条件</span></strong><br>
+                    <span data-lang="en">• Risk Consistency Limit: if triggered once on 51010-NoPC, profit split permanently drops to 20%.<br>• 510Zero: if profit &lt; 6%, split may drop to 10%.<br>• Cross-account hedging is strictly prohibited — detected violations result in all payouts denied and accounts closed.<br>• Profit split escalates with each successful payout cycle.</span>
+                    <span data-lang="zh">• 风险一致性限制：51010-NoPC 账户一旦触发，分润永久降至 20%。<br>• 510Zero 账户：盈利低于 6% 时分润可能降至 10%。<br>• 严禁跨账户对冲，一经检测将拒绝所有出金并关闭账户。<br>• 分润比例随每次成功出金递增。</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- BlueBerry Funded -->
+        <div class="firm-card">
+            <div class="firm-card-header">
+                <h3>BlueBerry Funded</h3>
+                <span class="firm-badge">Bi-weekly</span>
+                <a href="https://blueberrydash-krs2lpq4.manus.space" target="_blank" class="source-link" style="margin-left:8px;font-size:0.8em;"><span data-lang="en">Website</span><span data-lang="zh">官网</span></a>
+            </div>
+            <div class="firm-card-body">
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">First Payout</span><span data-lang="zh">首次出金</span></div><div class="rule-value"><span data-lang="en">14 days after funded account activation</span><span data-lang="zh">资金账户激活后 14 天</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Frequency</span><span data-lang="zh">出金周期</span></div><div class="rule-value"><span data-lang="en">Bi-weekly (default); 7-day add-on or on-demand add-on available</span><span data-lang="zh">默认每两周；可购买 7 天插件或按需出金插件</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Profit Split</span><span data-lang="zh">分润比例</span></div><div class="rule-value"><span data-lang="en">80% → 90% (Scaling: 10% profit in 3 months + 4 payouts)</span><span data-lang="zh">80% → 90%（扩展：3 个月内盈利 10% 且完成 4 次出金）</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Fee Refund</span><span data-lang="zh">返还报名费</span></div><div class="rule-value"><span data-lang="en">No</span><span data-lang="zh">否</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Payment Methods</span><span data-lang="zh">出金方式</span></div><div class="rule-value">Crypto, Rise Pay</div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Processing</span><span data-lang="zh">处理时间</span></div><div class="rule-value">1–2 <span data-lang="en">business days</span><span data-lang="zh">个工作日</span></div></div>
+                <div class="rule-detail-box">
+                    <strong><span data-lang="en">⚠️ Key Conditions</span><span data-lang="zh">⚠️ 关键条件</span></strong><br>
+                    <span data-lang="en">• Active Trading Days: 3–5 profitable days required per payout cycle (each day must show ≥0.5% realized profit on initial balance).<br>• On-demand add-on: requires ≥$100 profit and active trading day criteria met.<br>• 3-Day Fast Track add-on: reduces minimum trading days from 5 to 3.<br>• Backed by regulated broker Blueberry Markets — higher execution stability.</span>
+                    <span data-lang="zh">• 活跃交易日：每次出金需满足 3–5 个盈利交易日（每日已实现盈利 ≥ 初始余额的 0.5%）。<br>• 按需出金插件：需满足 ≥$100 盈利且达到活跃交易日要求。<br>• 3 天快轨插件：将最低交易天数从 5 天缩短至 3 天。<br>• 由受监管经纪商 Blueberry Markets 提供流动性支持，执行稳定性更高。</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alpha Funded -->
+        <div class="firm-card">
+            <div class="firm-card-header">
+                <h3>Alpha Funded</h3>
+                <span class="firm-badge">Weekly / Bi-weekly</span>
+                <a href="https://alphaguide-geewgpg6.manus.space" target="_blank" class="source-link" style="margin-left:8px;font-size:0.8em;"><span data-lang="en">Website</span><span data-lang="zh">官网</span></a>
+            </div>
+            <div class="firm-card-body">
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">First Payout</span><span data-lang="zh">首次出金</span></div><div class="rule-value"><span data-lang="en">Standard: 14 days; Advanced/Zero: 7 days; Instant: 30 days or on-demand</span><span data-lang="zh">Standard：14 天；Advanced/Zero：7 天；Instant：30 天或按需</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Frequency</span><span data-lang="zh">出金周期</span></div><div class="rule-value"><span data-lang="en">Standard: Bi-weekly; Advanced & Zero: Weekly</span><span data-lang="zh">Standard：每两周；Advanced 及 Zero：每周</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Profit Split</span><span data-lang="zh">分润比例</span></div><div class="rule-value"><span data-lang="en">Standard: 70% → 80% → 90% (3rd/4th/5th payout); Advanced & Zero: 90% fixed; Instant: 80%–100%</span><span data-lang="zh">Standard：70% → 80% → 90%（第 3/4/5 次出金递增）；Advanced 及 Zero：固定 90%；Instant：80%–100%</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Fee Refund</span><span data-lang="zh">返还报名费</span></div><div class="rule-value"><span data-lang="en">Standard & Zero: Yes; Advanced: No (higher split compensates)</span><span data-lang="zh">Standard 及 Zero：是；Advanced：否（以更高分润补偿）</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Payment Methods</span><span data-lang="zh">出金方式</span></div><div class="rule-value">Rise Pay, Crypto</div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Withdrawal Limit</span><span data-lang="zh">单次出金上限</span></div><div class="rule-value"><span data-lang="en">Max $15,000 per payout; min $200 (Standard) / $1,000 (Advanced)</span><span data-lang="zh">单次最多 $15,000；最低 $200（Standard）/ $1,000（Advanced）</span></div></div>
+                <div class="rule-detail-box">
+                    <strong><span data-lang="en">⚠️ Key Conditions</span><span data-lang="zh">⚠️ 关键条件</span></strong><br>
+                    <span data-lang="en">• Consistency Rule: Standard & Zero: 40% Best Day Rule; Advanced: none (only 5 profitable days required); Instant: 20%.<br>• Alpha Prime Conversion: after 5 payouts or $40K eligible profit, invited to Alpha Prime (real office trading); split drops to 60% but fixed monthly salary added.<br>• Processing within 48 hours.</span>
+                    <span data-lang="zh">• 一致性规则：Standard 及 Zero：40% 最佳交易日规则；Advanced：无限制（仅需 5 个盈利日）；Instant：20%。<br>• Alpha Prime 转换：完成 5 次出金或应付利润达 $40,000 后，受邀进入 Alpha Prime（实盘办公模式），分润降至 60% 但增加固定月薪。<br>• 48 小时内处理。</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tiger Funded -->
+        <div class="firm-card">
+            <div class="firm-card-header">
+                <h3>Tiger Funded</h3>
+                <span class="firm-badge warn"><span data-lang="en">⚠️ Disputed</span><span data-lang="zh">⚠️ 存在争议</span></span>
+                <a href="https://tigerfunded-efhvrcs9.manus.space" target="_blank" class="source-link" style="margin-left:8px;font-size:0.8em;"><span data-lang="en">Website</span><span data-lang="zh">官网</span></a>
+            </div>
+            <div class="firm-card-body">
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">First Payout</span><span data-lang="zh">首次出金</span></div><div class="rule-value"><span data-lang="en">14 days after funded account activation</span><span data-lang="zh">资金账户激活后 14 天</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Frequency</span><span data-lang="zh">出金周期</span></div><div class="rule-value"><span data-lang="en">Bi-weekly</span><span data-lang="zh">每两周</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Profit Split</span><span data-lang="zh">分润比例</span></div><div class="rule-value"><span data-lang="en">80% → 95% (Scaling)</span><span data-lang="zh">80% → 95%（扩展计划）</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Fee Refund</span><span data-lang="zh">返还报名费</span></div><div class="rule-value"><span data-lang="en">Yes — 200% refund (double the entry fee returned)</span><span data-lang="zh">是 — 200% 退还（返还双倍报名费）</span></div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Payment Methods</span><span data-lang="zh">出金方式</span></div><div class="rule-value">Rise Pay, Crypto</div></div>
+                <div class="rule-row"><div class="rule-label"><span data-lang="en">Processing</span><span data-lang="zh">处理时间</span></div><div class="rule-value">1–3 <span data-lang="en">business days (reported delays)</span><span data-lang="zh">个工作日（用户反映存在延迟）</span></div></div>
+                <div class="rule-detail-box" style="border-left-color:#e53e3e;">
+                    <strong><span data-lang="en">⚠️ Disputed Clauses (User Reports)</span><span data-lang="zh">⚠️ 争议条款（用户反映）</span></strong><br>
+                    <span data-lang="en">• Available Margin Rule: must maintain 70%–80% free margin after opening positions; violations classified as "over-leveraging" and payout denied.<br>• IP/KYC Mismatch: if trading IP differs from KYC country, platform may deny payout citing fraud risk.<br>• 2-Minute Rule: positions held &lt;2 minutes (e.g. 55 seconds) reported as violations leading to profit clawback.<br>• These clauses are not prominently disclosed — exercise caution.</span>
+                    <span data-lang="zh">• 可用保证金规则：开仓后必须保留 70%–80% 的可用保证金，否则被判定为过度风险，拒绝出金。<br>• IP/KYC 不符：交易 IP 与 KYC 提交国家不一致，平台可能以欺诈风险为由拒绝出金。<br>• 2 分钟规则：持仓时间短于 2 分钟（如 55 秒）被报告为违规，导致利润被清空。<br>• 上述条款未在官网显著披露，请谨慎对待。</span>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- end consistency-grid -->
+</div><!-- end payout tab -->
 
 <footer>
     <p>
